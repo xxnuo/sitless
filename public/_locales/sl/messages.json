@@ -1,0 +1,79 @@
+{
+  "extName": {
+    "message": "Sit Less"
+  },
+  "extDesc": {
+    "message": "Sedentary reminder extension"
+  },
+  "popupTitle": {
+    "message": "Sit Less"
+  },
+  "statusPaused": {
+    "message": "Paused"
+  },
+  "statusEveryMinutes": {
+    "message": "Remind every $MINUTES$ minutes",
+    "placeholders": {
+      "minutes": {
+        "content": "$1"
+      }
+    }
+  },
+  "expandedState": {
+    "message": "Expanded"
+  },
+  "collapsedState": {
+    "message": "Collapsed"
+  },
+  "notificationSettingsTitle": {
+    "message": "Notification Settings"
+  },
+  "reminderSettingsTitle": {
+    "message": "Reminder Settings"
+  },
+  "toggleLabel": {
+    "message": "Enable reminders"
+  },
+  "intervalLabel": {
+    "message": "Reminder interval (minutes)"
+  },
+  "notificationTitleLabel": {
+    "message": "Notification title"
+  },
+  "notificationTitlePlaceholder": {
+    "message": "Use default title if empty"
+  },
+  "notificationMessageLabel": {
+    "message": "Notification message"
+  },
+  "notificationMessagePlaceholder": {
+    "message": "Use default message if empty"
+  },
+  "notificationDisplaySecondsLabel": {
+    "message": "Display time (seconds)"
+  },
+  "permissionGranted": {
+    "message": "Notification permission: granted"
+  },
+  "permissionDenied": {
+    "message": "Notification permission: not granted"
+  },
+  "permissionBannerText": {
+    "message": "Enable notifications to receive reminders"
+  },
+  "permissionBannerAction": {
+    "message": "Enable"
+  },
+  "requestPermissionBtn": {
+    "message": "Request Permission"
+  },
+  "testNotificationBtn": {
+    "message": "Test Notification"
+  },
+  "notificationTitle": {
+    "message": "Time to move"
+  },
+  "notificationMessage": {
+    "message": "Stand up and stretch for 2-5 minutes."
+  }
+}

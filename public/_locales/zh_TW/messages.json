@@ -1,0 +1,79 @@
+{
+  "extName": {
+    "message": "Sit Less"
+  },
+  "extDesc": {
+    "message": "久坐提醒擴充功能"
+  },
+  "popupTitle": {
+    "message": "Sit Less"
+  },
+  "statusPaused": {
+    "message": "已暫停"
+  },
+  "statusEveryMinutes": {
+    "message": "每 $MINUTES$ 分鐘提醒一次",
+    "placeholders": {
+      "minutes": {
+        "content": "$1"
+      }
+    }
+  },
+  "expandedState": {
+    "message": "已展開"
+  },
+  "collapsedState": {
+    "message": "已摺疊"
+  },
+  "notificationSettingsTitle": {
+    "message": "通知設定"
+  },
+  "reminderSettingsTitle": {
+    "message": "提醒設定"
+  },
+  "toggleLabel": {
+    "message": "提醒開關"
+  },
+  "intervalLabel": {
+    "message": "提醒間隔（分鐘）"
+  },
+  "notificationTitleLabel": {
+    "message": "通知標題"
+  },
+  "notificationTitlePlaceholder": {
+    "message": "留空則使用預設標題"
+  },
+  "notificationMessageLabel": {
+    "message": "通知訊息"
+  },
+  "notificationMessagePlaceholder": {
+    "message": "留空則使用預設訊息"
+  },
+  "notificationDisplaySecondsLabel": {
+    "message": "顯示時間（秒）"
+  },
+  "permissionGranted": {
+    "message": "通知權限：已授權"
+  },
+  "permissionDenied": {
+    "message": "通知權限：未授權"
+  },
+  "permissionBannerText": {
+    "message": "開啟通知權限後才能收到提醒"
+  },
+  "permissionBannerAction": {
+    "message": "開啟"
+  },
+  "requestPermissionBtn": {
+    "message": "申請通知權限"
+  },
+  "testNotificationBtn": {
+    "message": "測試通知"
+  },
+  "notificationTitle": {
+    "message": "久坐提醒"
+  },
+  "notificationMessage": {
+    "message": "起來活動 2-5 分鐘，伸展一下身體。"
+  }
+}

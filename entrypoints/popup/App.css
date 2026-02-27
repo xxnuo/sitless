@@ -1,0 +1,42 @@
+.popup {
+  width: 300px;
+  padding: 16px;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: #202124;
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.status {
+  margin: 0 0 14px;
+  color: #5f6368;
+  font-size: 13px;
+}
+
+.row,
+.column {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.row {
+  justify-content: space-between;
+}
+
+.column {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+input[type='range'] {
+  width: 100%;
+}
+
+strong {
+  font-size: 18px;
+}

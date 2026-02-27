@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import type { IconType } from 'react-icons';
 import { BiSolidTimer, BiTimer } from 'react-icons/bi';
@@ -247,6 +247,17 @@ const builtinIcons: { key: string; Icon: IconType }[] = [
   { key: 'PiTimerThin', Icon: PiTimerThin },
 ];
 
+function t(key: string, substitutions?: string | string[]): string {
+  return (
+    (
+      browser.i18n.getMessage as (
+        name: string,
+        substitutions?: string | string[],
+      ) => string
+    )(key, substitutions) || key
+  );
+}
+
 function App() {
   const [settings, setSettings] = useState<ReminderSettings>(defaultSettings);
   const [loading, setLoading] = useState(true);
@@ -262,41 +273,6 @@ function App() {
       setLoading(false);
     });
   }, []);
-
-  const uiLanguage = useMemo(() => {
-    try {
-      return browser.i18n.getUILanguage?.() || '';
-    } catch {
-      return '';
-    }
-  }, []);
-
-  const text = useMemo(() => {
-    if (uiLanguage.startsWith('zh')) {
-      return {
-        title: '通知图标设置',
-        current: '当前图标',
-        upload: '上传图片',
-        builtins: '内置图标',
-        background: '底色',
-        backgroundTransparent: '透明底色',
-        reset: '使用默认图标',
-        test: '测试通知',
-        uploadHint: '建议使用清晰的正方形图片',
-      };
-    }
-    return {
-      title: 'Notification Icon Settings',
-      current: 'Current Icon',
-      upload: 'Upload Image',
-      builtins: 'Built-in Icons',
-      background: 'Background',
-      backgroundTransparent: 'Transparent Background',
-      reset: 'Use Default Icon',
-      test: 'Test Notification',
-      uploadHint: 'Square images are recommended',
-    };
-  }, [uiLanguage]);
 
   async function saveIcon(
     notificationIconDataUrl: string,
@@ -315,11 +291,7 @@ function App() {
       setSettings(next);
       setMessage(successMessage);
     } catch {
-      if (uiLanguage.startsWith('zh')) {
-        setMessage('保存失败');
-      } else {
-        setMessage('Save failed');
-      }
+      setMessage(t('iconSettingsSaveFailed'));
     } finally {
       setSaving(false);
     }
@@ -331,11 +303,7 @@ function App() {
     try {
       const dataUrl = await fileToSquareDataUrl(file, 128);
       if (!dataUrl) {
-        if (uiLanguage.startsWith('zh')) {
-          setMessage('图标读取失败');
-        } else {
-          setMessage('Icon read failed');
-        }
+        setMessage(t('iconSettingsIconReadFailed'));
         return;
       }
       const safe = normalizeSettings({
@@ -343,23 +311,12 @@ function App() {
         notificationIconDataUrl: dataUrl,
       });
       if (!safe.notificationIconDataUrl) {
-        if (uiLanguage.startsWith('zh')) {
-          setMessage('图标过大或格式不支持');
-        } else {
-          setMessage('Icon too large or unsupported');
-        }
+        setMessage(t('iconSettingsIconTooLargeOrUnsupported'));
         return;
       }
-      await saveIcon(
-        safe.notificationIconDataUrl,
-        uiLanguage.startsWith('zh') ? '图标已更新' : 'Icon updated',
-      );
+      await saveIcon(safe.notificationIconDataUrl, t('iconSettingsIconUpdated'));
     } catch {
-      if (uiLanguage.startsWith('zh')) {
-        setMessage('图标设置失败');
-      } else {
-        setMessage('Failed to set icon');
-      }
+      setMessage(t('iconSettingsFailedToSetIcon'));
     }
   }
 
@@ -375,26 +332,14 @@ function App() {
       fg,
     );
     if (!dataUrl) {
-      if (uiLanguage.startsWith('zh')) {
-        setMessage('生成内置图标失败');
-      } else {
-        setMessage('Failed to generate built-in icon');
-      }
+      setMessage(t('iconSettingsFailedToGenerateBuiltinIcon'));
       return;
     }
-    await saveIcon(
-      dataUrl,
-      uiLanguage.startsWith('zh')
-        ? '已切换为内置图标'
-        : 'Built-in icon applied',
-    );
+    await saveIcon(dataUrl, t('iconSettingsBuiltinIconApplied'));
   }
 
   async function onResetDefault() {
-    await saveIcon(
-      '',
-      uiLanguage.startsWith('zh') ? '已切换为默认图标' : 'Default icon applied',
-    );
+    await saveIcon('', t('iconSettingsDefaultIconApplied'));
   }
 
   async function onTestNotification() {
@@ -403,18 +348,10 @@ function App() {
       type: 'test-notification',
     })) as TestNotificationResponse;
     if (result?.ok === false) {
-      if (uiLanguage.startsWith('zh')) {
-        setMessage('测试通知失败');
-      } else {
-        setMessage('Test notification failed');
-      }
+      setMessage(t('iconSettingsTestNotificationFailed'));
       return;
     }
-    if (uiLanguage.startsWith('zh')) {
-      setMessage('测试通知已发送');
-    } else {
-      setMessage('Test notification sent');
-    }
+    setMessage(t('iconSettingsTestNotificationSent'));
   }
 
   return (
@@ -423,7 +360,7 @@ function App() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-xl">
             <MdTimer className="size-6" />
-            {text.title}
+            {t('iconSettingsTitle')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -431,7 +368,7 @@ function App() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
                 <MdOutlineTimer className="size-5" />
-                {text.current}
+                {t('iconSettingsCurrentIcon')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -447,17 +384,19 @@ function App() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
                 <BiTimer className="size-5" />
-                {text.upload}
+                {t('iconSettingsUploadImage')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <p className="text-muted-foreground text-xs">{text.uploadHint}</p>
+              <p className="text-muted-foreground text-xs">
+                {t('iconSettingsUploadHint')}
+              </p>
               <Button
                 type="button"
                 onClick={() => inputRef.current?.click()}
                 disabled={loading || saving}
               >
-                {text.upload}
+                {t('iconSettingsUploadImage')}
               </Button>
               <Input
                 ref={inputRef}
@@ -478,13 +417,13 @@ function App() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
                 <PiTimerBold className="size-5" />
-                {text.builtins}
+                {t('iconSettingsBuiltinIcons')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex flex-wrap items-center gap-4">
                 <Label className="gap-3">
-                  <span>{text.background}</span>
+                  <span>{t('iconSettingsBackground')}</span>
                   <Input
                     type="color"
                     value={backgroundColor}
@@ -499,7 +438,7 @@ function App() {
                     onCheckedChange={(checked) => setBackgroundTransparent(checked === true)}
                     disabled={saving}
                   />
-                  <span>{text.backgroundTransparent}</span>
+                  <span>{t('iconSettingsBackgroundTransparent')}</span>
                 </Label>
               </div>
               <div className="grid max-h-[160px] grid-cols-5 gap-2 overflow-y-auto pr-1 sm:grid-cols-6 md:grid-cols-8">
@@ -547,7 +486,7 @@ function App() {
               disabled={loading || saving}
             >
               <MdTimerOff className="size-4" />
-              {text.reset}
+              {t('iconSettingsReset')}
             </Button>
             <Button
               type="button"
@@ -555,7 +494,7 @@ function App() {
               disabled={loading || saving}
             >
               <BiSolidTimer className="size-4" />
-              {text.test}
+              {t('iconSettingsTest')}
             </Button>
           </div>
 

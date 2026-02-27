@@ -90,5 +90,62 @@
   },
   "notificationMessage": {
     "message": "Stand up and stretch for 2-5 minutes."
+  },
+  "iconSettingsTitle": {
+    "message": "Notification Icon Settings"
+  },
+  "iconSettingsCurrentIcon": {
+    "message": "Current Icon"
+  },
+  "iconSettingsUploadImage": {
+    "message": "Upload Image"
+  },
+  "iconSettingsUploadHint": {
+    "message": "Square images are recommended"
+  },
+  "iconSettingsBuiltinIcons": {
+    "message": "Built-in Icons"
+  },
+  "iconSettingsBackground": {
+    "message": "Background"
+  },
+  "iconSettingsBackgroundTransparent": {
+    "message": "Transparent Background"
+  },
+  "iconSettingsReset": {
+    "message": "Use Default Icon"
+  },
+  "iconSettingsTest": {
+    "message": "Test Notification"
+  },
+  "iconSettingsSaveFailed": {
+    "message": "Save failed"
+  },
+  "iconSettingsIconReadFailed": {
+    "message": "Icon read failed"
+  },
+  "iconSettingsIconTooLargeOrUnsupported": {
+    "message": "Icon too large or unsupported"
+  },
+  "iconSettingsIconUpdated": {
+    "message": "Icon updated"
+  },
+  "iconSettingsFailedToSetIcon": {
+    "message": "Failed to set icon"
+  },
+  "iconSettingsFailedToGenerateBuiltinIcon": {
+    "message": "Failed to generate built-in icon"
+  },
+  "iconSettingsBuiltinIconApplied": {
+    "message": "Built-in icon applied"
+  },
+  "iconSettingsDefaultIconApplied": {
+    "message": "Default icon applied"
+  },
+  "iconSettingsTestNotificationFailed": {
+    "message": "Test notification failed"
+  },
+  "iconSettingsTestNotificationSent": {
+    "message": "Test notification sent"
   }
 }

@@ -90,5 +90,62 @@
   },
   "notificationMessage": {
     "message": "起来活动 2-5 分钟，伸展一下身体。"
+  },
+  "iconSettingsTitle": {
+    "message": "通知图标设置"
+  },
+  "iconSettingsCurrentIcon": {
+    "message": "当前图标"
+  },
+  "iconSettingsUploadImage": {
+    "message": "上传图片"
+  },
+  "iconSettingsUploadHint": {
+    "message": "建议使用清晰的正方形图片"
+  },
+  "iconSettingsBuiltinIcons": {
+    "message": "内置图标"
+  },
+  "iconSettingsBackground": {
+    "message": "底色"
+  },
+  "iconSettingsBackgroundTransparent": {
+    "message": "透明底色"
+  },
+  "iconSettingsReset": {
+    "message": "使用默认图标"
+  },
+  "iconSettingsTest": {
+    "message": "测试通知"
+  },
+  "iconSettingsSaveFailed": {
+    "message": "保存失败"
+  },
+  "iconSettingsIconReadFailed": {
+    "message": "图标读取失败"
+  },
+  "iconSettingsIconTooLargeOrUnsupported": {
+    "message": "图标过大或格式不支持"
+  },
+  "iconSettingsIconUpdated": {
+    "message": "图标已更新"
+  },
+  "iconSettingsFailedToSetIcon": {
+    "message": "图标设置失败"
+  },
+  "iconSettingsFailedToGenerateBuiltinIcon": {
+    "message": "生成内置图标失败"
+  },
+  "iconSettingsBuiltinIconApplied": {
+    "message": "已切换为内置图标"
+  },
+  "iconSettingsDefaultIconApplied": {
+    "message": "已切换为默认图标"
+  },
+  "iconSettingsTestNotificationFailed": {
+    "message": "测试通知失败"
+  },
+  "iconSettingsTestNotificationSent": {
+    "message": "测试通知已发送"
   }
 }

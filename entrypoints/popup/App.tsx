@@ -1,5 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import './App.css';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
 
 type ReminderSettings = {
   enabled: boolean;
@@ -158,6 +166,34 @@ async function hasNotificationPermission(): Promise<boolean> {
   }
 }
 
+function SectionHeader({
+  title,
+  open,
+  onClick,
+  badge,
+}: {
+  title: string;
+  open: boolean;
+  onClick: () => void;
+  badge: string;
+}) {
+  return (
+    <button
+      type="button"
+      className="flex w-full items-center justify-between px-4 py-3 text-left"
+      onClick={onClick}
+    >
+      <div className="flex items-center gap-2">
+        <Badge variant="secondary">{badge}</Badge>
+        <span className="text-sm font-medium">{title}</span>
+      </div>
+      <span className="text-muted-foreground text-xs" aria-hidden="true">
+        {open ? '▲' : '▼'}
+      </span>
+    </button>
+  );
+}
+
 function App() {
   const [settings, setSettings] = useState<ReminderSettings>(defaultSettings);
   const [loading, setLoading] = useState(true);
@@ -248,12 +284,10 @@ function App() {
 
   async function save(next: ReminderSettings) {
     const safe = normalizeSettings(next);
-    console.log('[save] saving, iconDataUrl length:', safe.notificationIconDataUrl.length);
     settingsRef.current = safe;
     setSettings(safe);
     await browser.storage.local.set({ [STORAGE_KEY]: safe });
     await browser.runtime.sendMessage({ type: 'sync-reminder' });
-    console.log('[save] done');
   }
 
   async function refreshPermission() {
@@ -322,16 +356,6 @@ function App() {
     return 'Open Icon Settings';
   }, [uiLanguage]);
 
-  const iconSettingsHintText = useMemo(() => {
-    if (uiLanguage.startsWith('zh')) return '上传图片或选择内置图标';
-    return 'Upload or pick a built-in icon';
-  }, [uiLanguage]);
-
-  const currentIconText = useMemo(() => {
-    if (uiLanguage.startsWith('zh')) return settings.notificationIconDataUrl ? '已设置自定义图标' : '当前为默认图标';
-    return settings.notificationIconDataUrl ? 'Custom icon in use' : 'Using default icon';
-  }, [settings.notificationIconDataUrl, uiLanguage]);
-  
   useEffect(() => {
     const onFocus = () => {
       void browser.storage.local.get(STORAGE_KEY).then((stored) => {
@@ -345,7 +369,7 @@ function App() {
       window.removeEventListener('focus', onFocus);
     };
   }, []);
-  
+
   useEffect(() => {
     const onStorageChanged = (
       changes: Record<string, { newValue?: unknown }>,
@@ -377,83 +401,60 @@ function App() {
   const intervalStep = intervalUnit === 's' ? 6 : intervalUnit === 'h' ? 0.1 : 1;
 
   return (
-    <main className="popup">
+    <main className="w-[360px] space-y-3 p-4">
       {showPermissionBanner ? (
-        <div className="banner">
-          <div className="banner-text">{t('permissionBannerText')}</div>
-          <button
-            type="button"
-            className="banner-action"
-            onClick={() => void requestPermission()}
-            disabled={loading}
-          >
-            {t('permissionBannerAction')}
-          </button>
-        </div>
+        <Card className="gap-2 border-amber-300 bg-amber-50 py-3">
+          <CardContent className="flex items-center justify-between gap-2 px-3">
+            <p className="text-muted-foreground text-xs">{t('permissionBannerText')}</p>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={() => void requestPermission()}
+              disabled={loading}
+            >
+              {t('permissionBannerAction')}
+            </Button>
+          </CardContent>
+        </Card>
       ) : null}
-      <h1>{t('popupTitle')}</h1>
-      <p className="status">{statusText}</p>
 
-      <section className="section">
-        <button
-          type="button"
-          className="section-head"
+      <div className="space-y-1">
+        <h1 className="text-xl font-semibold">{t('popupTitle')}</h1>
+        <p className="text-muted-foreground text-xs">{statusText}</p>
+      </div>
+
+      <Card className="gap-0 overflow-hidden py-0">
+        <SectionHeader
+          badge="R"
+          title={t('reminderSettingsTitle')}
+          open={reminderOpen}
           onClick={() => {
             const next = !reminderOpen;
             setReminderOpen(next);
             void saveUiState({ ...uiStateRef.current, reminderOpen: next });
           }}
-        >
-          <span className="head-left">
-            <span className="section-icon" aria-hidden="true">
-              R
-            </span>
-            <span>{t('reminderSettingsTitle')}</span>
-          </span>
-          <span className="head-right">
-            <span className="arrow" aria-hidden="true">
-              {reminderOpen ? '▲' : '▼'}
-            </span>
-          </span>
-        </button>
-
+        />
         {reminderOpen ? (
-          <div className="section-body">
-            <label className="row" htmlFor="enabled">
-              <span>{t('toggleLabel')}</span>
-              <input
-                id="enabled"
-                type="checkbox"
-                checked={settings.enabled}
-                onChange={(e) =>
-                  void save({ ...settings, enabled: e.target.checked })
-                }
-                disabled={loading}
-              />
-            </label>
+          <>
+            <Separator />
+            <CardContent className="space-y-4 py-4">
+              <div className="flex items-center justify-between gap-4">
+                <Label htmlFor="enabled">{t('toggleLabel')}</Label>
+                <Switch
+                  id="enabled"
+                  checked={settings.enabled}
+                  onCheckedChange={(checked) => void save({ ...settings, enabled: checked })}
+                  disabled={loading}
+                />
+              </div>
 
-            <label className="column" htmlFor="interval">
-              <span>{t('intervalLabel')}</span>
-              <input
-                id="interval"
-                type="range"
-                min={intervalMin}
-                max={intervalMax}
-                step={intervalStep}
-                value={intervalValue}
-                onChange={(e) => {
-                  const nextValue = clampInterval(Number(e.target.value), intervalUnit);
-                  setIntervalValue(nextValue);
-                  void save({
-                    ...settings,
-                    intervalMinutes: intervalToMinutes(nextValue, intervalUnit),
-                  });
-                }}
-                disabled={loading || !settings.enabled}
-              />
-              <div className="interval-inline">
+              <div className="space-y-2">
+                <Label htmlFor="interval">{t('intervalLabel')}</Label>
                 <input
-                  type="number"
+                  id="interval"
+                  className="w-full accent-primary"
+                  type="range"
                   min={intervalMin}
                   max={intervalMax}
                   step={intervalStep}
@@ -468,190 +469,199 @@ function App() {
                   }}
                   disabled={loading || !settings.enabled}
                 />
-                <select
-                  value={intervalUnit}
-                  onChange={(e) => {
-                    const nextUnit = e.target.value as IntervalUnit;
-                    const currentMinutes = intervalToMinutes(intervalValue, intervalUnit);
-                    const nextValueRaw =
-                      nextUnit === 's'
-                        ? currentMinutes * 60
-                        : nextUnit === 'h'
-                          ? currentMinutes / 60
-                          : currentMinutes;
-                    const nextValue = clampInterval(nextValueRaw, nextUnit);
-                    setIntervalUnit(nextUnit);
-                    setIntervalValue(nextValue);
-                    void save({
-                      ...settings,
-                      intervalMinutes: intervalToMinutes(nextValue, nextUnit),
-                    });
-                  }}
-                  disabled={loading || !settings.enabled}
-                >
-                  <option value="s">{unitLabels.s}</option>
-                  <option value="m">{unitLabels.m}</option>
-                  <option value="h">{unitLabels.h}</option>
-                </select>
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="number"
+                    min={intervalMin}
+                    max={intervalMax}
+                    step={intervalStep}
+                    value={intervalValue}
+                    onChange={(e) => {
+                      const nextValue = clampInterval(Number(e.target.value), intervalUnit);
+                      setIntervalValue(nextValue);
+                      void save({
+                        ...settings,
+                        intervalMinutes: intervalToMinutes(nextValue, intervalUnit),
+                      });
+                    }}
+                    disabled={loading || !settings.enabled}
+                  />
+                  <select
+                    value={intervalUnit}
+                    className={cn(
+                      'border-input bg-background focus-visible:border-ring focus-visible:ring-ring/50 h-9 rounded-md border px-3 text-sm outline-none focus-visible:ring-[3px]',
+                    )}
+                    onChange={(e) => {
+                      const nextUnit = e.target.value as IntervalUnit;
+                      const currentMinutes = intervalToMinutes(intervalValue, intervalUnit);
+                      const nextValueRaw =
+                        nextUnit === 's'
+                          ? currentMinutes * 60
+                          : nextUnit === 'h'
+                            ? currentMinutes / 60
+                            : currentMinutes;
+                      const nextValue = clampInterval(nextValueRaw, nextUnit);
+                      setIntervalUnit(nextUnit);
+                      setIntervalValue(nextValue);
+                      void save({
+                        ...settings,
+                        intervalMinutes: intervalToMinutes(nextValue, nextUnit),
+                      });
+                    }}
+                    disabled={loading || !settings.enabled}
+                  >
+                    <option value="s">{unitLabels.s}</option>
+                    <option value="m">{unitLabels.m}</option>
+                    <option value="h">{unitLabels.h}</option>
+                  </select>
+                </div>
               </div>
-            </label>
 
-            <div className="actions single">
-              <button
+              <Button
                 type="button"
+                variant="outline"
+                className="w-full"
                 onClick={() => void resetReminderSection()}
                 disabled={loading}
               >
                 {t('resetSettingsBtn')}
-              </button>
-            </div>
-          </div>
+              </Button>
+            </CardContent>
+          </>
         ) : null}
-      </section>
+      </Card>
 
-      <section className="section">
-        <button
-          type="button"
-          className="section-head"
+      <Card className="gap-0 overflow-hidden py-0">
+        <SectionHeader
+          badge="N"
+          title={t('notificationSettingsTitle')}
+          open={notificationOpen}
           onClick={() => {
             const next = !notificationOpen;
             setNotificationOpen(next);
             void saveUiState({ ...uiStateRef.current, notificationOpen: next });
           }}
-        >
-          <span className="head-left">
-            <span className="section-icon" aria-hidden="true">
-              N
-            </span>
-            <span>{t('notificationSettingsTitle')}</span>
-          </span>
-          <span className="head-right">
-            <span className="arrow" aria-hidden="true">
-              {notificationOpen ? '▲' : '▼'}
-            </span>
-          </span>
-        </button>
-
+        />
         {notificationOpen ? (
-          <div className="section-body">
-            <p className="permission">{permissionText}</p>
+          <>
+            <Separator />
+            <CardContent className="space-y-4 py-4">
+              <Badge variant={permissionGranted ? 'secondary' : 'destructive'}>{permissionText}</Badge>
 
-            {!permissionGranted ? (
-              <div className="actions">
-                <button
+              {!permissionGranted ? (
+                <Button
                   type="button"
+                  className="w-full"
+                  variant="outline"
                   onClick={() => void requestPermission()}
                   disabled={loading}
                 >
                   {t('requestPermissionBtn')}
-                </button>
-              </div>
-            ) : null}
+                </Button>
+              ) : null}
 
-            <label className="column" htmlFor="notificationTitle">
-              <span>{t('notificationTitleLabel')}</span>
-              <input
-                id="notificationTitle"
-                type="text"
-                maxLength={80}
-                value={settings.notificationTitle}
-                placeholder={t('notificationTitlePlaceholder')}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setSettings((prev) => {
-                    const next = normalizeSettings({ ...prev, notificationTitle: value });
-                    settingsRef.current = next;
-                    return next;
-                  });
-                }}
-                onBlur={() => void save(settingsRef.current)}
-                disabled={loading}
-              />
-            </label>
-
-            <label className="column">
-              <span>{t('notificationIconLabel')}</span>
-              <div className="icon-picker">
-                <img
-                  className="icon-preview"
-                  src={settings.notificationIconDataUrl || '/icon/128.png'}
-                  alt=""
+              <div className="space-y-2">
+                <Label htmlFor="notificationTitle">{t('notificationTitleLabel')}</Label>
+                <Input
+                  id="notificationTitle"
+                  type="text"
+                  maxLength={80}
+                  value={settings.notificationTitle}
+                  placeholder={t('notificationTitlePlaceholder')}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setSettings((prev) => {
+                      const next = normalizeSettings({ ...prev, notificationTitle: value });
+                      settingsRef.current = next;
+                      return next;
+                    });
+                  }}
+                  onBlur={() => void save(settingsRef.current)}
+                  disabled={loading}
                 />
-                <div className="icon-controls">
-                  <button
+              </div>
+
+              <div className="space-y-2">
+                <Label>{t('notificationIconLabel')}</Label>
+                <div className="bg-muted/40 flex items-center gap-3 rounded-lg border p-3">
+                  <img
+                    className="size-10 rounded-md border object-cover"
+                    src={settings.notificationIconDataUrl || '/icon/128.png'}
+                    alt=""
+                  />
+                  <Button
                     type="button"
+                    className="w-full"
+                    variant="outline"
                     onClick={() => void openIconSettingsPage()}
                     disabled={loading}
                   >
                     {iconSettingsButtonText}
-                  </button>
-                  
+                  </Button>
                 </div>
               </div>
-              
-            </label>
 
-            <label className="column" htmlFor="notificationMessage">
-              <span>{t('notificationMessageLabel')}</span>
-              <textarea
-                id="notificationMessage"
-                rows={3}
-                maxLength={200}
-                value={settings.notificationMessage}
-                placeholder={t('notificationMessagePlaceholder')}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setSettings((prev) => {
-                    const next = normalizeSettings({ ...prev, notificationMessage: value });
-                    settingsRef.current = next;
-                    return next;
-                  });
-                }}
-                onBlur={() => void save(settingsRef.current)}
-                disabled={loading}
-              />
-            </label>
+              <div className="space-y-2">
+                <Label htmlFor="notificationMessage">{t('notificationMessageLabel')}</Label>
+                <Textarea
+                  id="notificationMessage"
+                  rows={3}
+                  maxLength={200}
+                  value={settings.notificationMessage}
+                  placeholder={t('notificationMessagePlaceholder')}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setSettings((prev) => {
+                      const next = normalizeSettings({ ...prev, notificationMessage: value });
+                      settingsRef.current = next;
+                      return next;
+                    });
+                  }}
+                  onBlur={() => void save(settingsRef.current)}
+                  disabled={loading}
+                />
+              </div>
 
-            <div className="actions single">
-              <button
+              <Button
                 type="button"
+                className="w-full"
                 onClick={() => void testNotification()}
                 disabled={loading}
               >
                 {t('testNotificationBtn')}
-              </button>
-            </div>
+              </Button>
 
-            <label className="column" htmlFor="notificationDisplaySeconds">
-              <span>{t('notificationDisplaySecondsLabel')}</span>
-              <input
-                id="notificationDisplaySeconds"
-                type="number"
-                min={1}
-                max={300}
-                value={settings.notificationDisplaySeconds}
-                onChange={(e) =>
-                  void save({
-                    ...settings,
-                    notificationDisplaySeconds: Number(e.target.value),
-                  })
-                }
-                disabled={loading}
-              />
-            </label>
+              <div className="space-y-2">
+                <Label htmlFor="notificationDisplaySeconds">{t('notificationDisplaySecondsLabel')}</Label>
+                <Input
+                  id="notificationDisplaySeconds"
+                  type="number"
+                  min={1}
+                  max={300}
+                  value={settings.notificationDisplaySeconds}
+                  onChange={(e) =>
+                    void save({
+                      ...settings,
+                      notificationDisplaySeconds: Number(e.target.value),
+                    })
+                  }
+                  disabled={loading}
+                />
+              </div>
 
-            <div className="actions single">
-              <button
+              <Button
                 type="button"
+                variant="outline"
+                className="w-full"
                 onClick={() => void resetNotificationSection()}
                 disabled={loading}
               >
                 {t('resetSettingsBtn')}
-              </button>
-            </div>
-          </div>
+              </Button>
+            </CardContent>
+          </>
         ) : null}
-      </section>
+      </Card>
     </main>
   );
 }

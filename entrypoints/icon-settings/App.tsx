@@ -36,7 +36,11 @@ import { TfiTimer } from 'react-icons/tfi';
 import { RxCountdownTimer, RxLapTimer, RxTimer } from 'react-icons/rx';
 import { PiTimer, PiTimerBold, PiTimerDuotone, PiTimerFill, PiTimerLight, PiTimerThin } from 'react-icons/pi';
 import { renderToStaticMarkup } from 'react-dom/server';
-import './App.css';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 
 type ReminderSettings = {
   enabled: boolean;
@@ -395,120 +399,133 @@ function App() {
   }
 
   return (
-    <main className="page">
-      <div className="card">
-        <h1>
-          <MdTimer className="title-icon" />
-          {text.title}
-        </h1>
-
-        <section className="section">
-          <h2>
-            <MdOutlineTimer className="head-icon" />
-            {text.current}
-          </h2>
-          <div className="preview-wrap">
-            <img
-              className="preview"
-              src={settings.notificationIconDataUrl || '/icon/128.png'}
-              alt=""
-            />
-          </div>
-        </section>
-
-        <section className="section">
-          <h2>
-            <BiTimer className="head-icon" />
-            {text.upload}
-          </h2>
-          <p className="hint">{text.uploadHint}</p>
-          <div className="row">
-            <button
-              type="button"
-              onClick={() => inputRef.current?.click()}
-              disabled={loading || saving}
-            >
-              {text.upload}
-            </button>
-            <input
-              ref={inputRef}
-              className="hidden"
-              type="file"
-              accept="image/*"
-              onChange={(e) => {
-                const file = e.currentTarget.files?.[0];
-                e.currentTarget.value = '';
-                if (file) void onUpload(file);
-              }}
-              disabled={loading || saving}
-            />
-          </div>
-        </section>
-
-        <section className="section">
-          <h2>
-            <PiTimerBold className="head-icon" />
-            {text.builtins}
-          </h2>
-          <div className="bg-controls">
-            <label className="bg-color">
-              <span>{text.background}</span>
-              <input
-                type="color"
-                value={backgroundColor}
-                onChange={(e) => setBackgroundColor(e.target.value)}
-                disabled={saving}
+    <main className="min-h-screen bg-muted/30 p-4 md:p-6">
+      <Card className="mx-auto max-w-4xl">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-xl">
+            <MdTimer className="size-6" />
+            {text.title}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <MdOutlineTimer className="size-5" />
+                {text.current}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <img
+                className="size-16 rounded-xl border object-cover"
+                src={settings.notificationIconDataUrl || '/icon/128.png'}
+                alt=""
               />
-            </label>
-            <label className="bg-transparent">
-              <input
-                type="checkbox"
-                checked={backgroundTransparent}
-                onChange={(e) => setBackgroundTransparent(e.target.checked)}
-                disabled={saving}
-              />
-              <span>{text.backgroundTransparent}</span>
-            </label>
-          </div>
-          <div className="builtins">
-            {builtinIconComponents.map((Icon, idx) => (
-              <button
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <BiTimer className="size-5" />
+                {text.upload}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="text-muted-foreground text-xs">{text.uploadHint}</p>
+              <Button
                 type="button"
-                key={idx}
-                className="builtin-btn"
-                onClick={() => void onPickBuiltin(Icon)}
+                onClick={() => inputRef.current?.click()}
                 disabled={loading || saving}
               >
-                <span
-                  className="builtin-preview"
-                  style={{
-                    background: backgroundTransparent ? 'transparent' : backgroundColor,
-                    border: backgroundTransparent ? '1px solid #d1d5db' : '1px solid transparent',
-                  }}
-                >
-                  <Icon
-                    size={34}
-                    color={backgroundTransparent ? '#111827' : getContrastColor(backgroundColor)}
+                {text.upload}
+              </Button>
+              <Input
+                ref={inputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.currentTarget.files?.[0];
+                  e.currentTarget.value = '';
+                  if (file) void onUpload(file);
+                }}
+                disabled={loading || saving}
+              />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <PiTimerBold className="size-5" />
+                {text.builtins}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex flex-wrap items-center gap-4">
+                <Label className="gap-3">
+                  <span>{text.background}</span>
+                  <Input
+                    type="color"
+                    value={backgroundColor}
+                    onChange={(e) => setBackgroundColor(e.target.value)}
+                    disabled={saving}
+                    className="h-9 w-14 p-1"
                   />
-                </span>
-              </button>
-            ))}
+                </Label>
+                <Label className="gap-3">
+                  <Switch
+                    checked={backgroundTransparent}
+                    onCheckedChange={setBackgroundTransparent}
+                    disabled={saving}
+                  />
+                  <span>{text.backgroundTransparent}</span>
+                </Label>
+              </div>
+              <div className="grid grid-cols-5 gap-2 sm:grid-cols-7 md:grid-cols-8 lg:grid-cols-10">
+                {builtinIconComponents.map((Icon, idx) => (
+                  <Button
+                    type="button"
+                    key={idx}
+                    size="icon"
+                    variant="outline"
+                    className="size-14"
+                    onClick={() => void onPickBuiltin(Icon)}
+                    disabled={loading || saving}
+                  >
+                    <span
+                      className="inline-flex size-10 items-center justify-center rounded-md"
+                      style={{
+                        background: backgroundTransparent ? 'transparent' : backgroundColor,
+                        border: backgroundTransparent ? '1px solid #d1d5db' : '1px solid transparent',
+                      }}
+                    >
+                      <Icon
+                        size={24}
+                        color={backgroundTransparent ? '#111827' : getContrastColor(backgroundColor)}
+                      />
+                    </span>
+                  </Button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="flex flex-wrap gap-3">
+            <Button type="button" variant="outline" onClick={() => void onResetDefault()} disabled={loading || saving}>
+              <MdTimerOff className="size-4" />
+              {text.reset}
+            </Button>
+            <Button type="button" onClick={() => void onTestNotification()} disabled={loading || saving}>
+              <BiSolidTimer className="size-4" />
+              {text.test}
+            </Button>
           </div>
-        </section>
 
-        <section className="section actions">
-          <button type="button" onClick={() => void onResetDefault()} disabled={loading || saving}>
-            <MdTimerOff className="btn-icon" />
-            {text.reset}
-          </button>
-          <button type="button" onClick={() => void onTestNotification()} disabled={loading || saving}>
-            <BiSolidTimer className="btn-icon" />
-            {text.test}
-          </button>
-        </section>
-
-        {message ? <p className="msg">{message}</p> : null}
-      </div>
+          {message ? <p className="text-sm">{message}</p> : null}
+        </CardContent>
+      </Card>
     </main>
   );
 }

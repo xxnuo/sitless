@@ -3,8 +3,10 @@ import { defineConfig } from 'wxt';
 export default defineConfig({
   modules: ['@wxt-dev/module-react'],
   manifest: {
-    name: 'SitLess',
-    description: '久坐提醒插件',
-    permissions: ['alarms', 'notifications', 'storage'],
+    default_locale: 'en',
+    name: '__MSG_extName__',
+    description: '__MSG_extDesc__',
+    permissions: ['alarms', 'storage'],
+    optional_permissions: ['notifications'],
   },
 });

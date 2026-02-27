@@ -11,5 +11,12 @@ export default defineConfig({
     name: '__MSG_extName__',
     description: '__MSG_extDesc__',
     permissions: ['alarms', 'storage', 'notifications'],
+    browser_specific_settings: {
+      gecko: {
+        data_collection_permissions: {
+          required: ['none'],
+        },
+      },
+    },
   },
 });

@@ -35,10 +35,22 @@
     "message": "Enable reminders"
   },
   "intervalLabel": {
-    "message": "Reminder interval (minutes)"
+    "message": "Reminder interval"
+  },
+  "resetSettingsBtn": {
+    "message": "Reset"
   },
   "notificationTitleLabel": {
     "message": "Notification title"
+  },
+  "notificationIconLabel": {
+    "message": "Notification icon"
+  },
+  "notificationIconPickBtn": {
+    "message": "Choose icon"
+  },
+  "notificationIconClearBtn": {
+    "message": "Use default"
   },
   "notificationTitlePlaceholder": {
     "message": "Use default title if empty"

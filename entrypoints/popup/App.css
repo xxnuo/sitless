@@ -96,6 +96,8 @@ h1 {
   align-items: center;
   gap: 10px;
   margin: 10px 0;
+  width: 100%;
+  min-width: 0;
 }
 
 .row {
@@ -110,6 +112,7 @@ h1 {
 input[type="range"],
 input[type="text"],
 input[type="number"],
+select,
 textarea {
   width: 100%;
   box-sizing: border-box;
@@ -117,6 +120,7 @@ textarea {
 
 input[type="text"],
 input[type="number"],
+select,
 textarea {
   border: 1px solid #dadce0;
   border-radius: 8px;
@@ -131,6 +135,24 @@ textarea {
 
 strong {
   font-size: 17px;
+}
+
+.interval-inline {
+  width: 100%;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.interval-inline input[type="number"] {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.interval-inline select {
+  flex: 0 0 88px;
+  width: 88px;
+  padding: 8px 6px;
 }
 
 .permission {
@@ -159,6 +181,74 @@ button {
 }
 
 button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.icon-picker {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.icon-preview {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid #dadce0;
+  object-fit: cover;
+  flex: 0 0 auto;
+  background: #fff;
+}
+
+.icon-controls {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.icon-controls button {
+  width: 100%;
+}
+
+.icon-file-hidden {
+  display: none;
+}
+
+.icon-message {
+  width: 100%;
+  margin: 0;
+  font-size: 12px;
+  color: #5f6368;
+}
+
+.icon-actions {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.icon-actions button {
+  width: 100%;
+}
+
+.icon-picker button,
+.icon-actions button {
+  border: 1px solid #dadce0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.icon-picker button:disabled,
+.icon-actions button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }

@@ -1,6 +1,8 @@
 const ALARM_NAME = 'sitless-reminder';
 const STORAGE_KEY = 'sitless-settings';
 const INSTALLED_AT_KEY = 'sitless-installed-at';
+const MIN_INTERVAL_MINUTES = 0.1;
+const MAX_INTERVAL_MINUTES = 180;
 
 type ReminderSettings = {
   enabled: boolean;
@@ -8,16 +10,19 @@ type ReminderSettings = {
   notificationTitle: string;
   notificationMessage: string;
   notificationDisplaySeconds: number;
+  notificationIconDataUrl: string;
 };
 
 type Message = { type: 'sync-reminder' } | { type: 'test-notification' };
 
+const MAX_ICON_DATA_URL_LENGTH = 2_000_000;
 const defaultSettings: ReminderSettings = {
   enabled: true,
   intervalMinutes: 45,
   notificationTitle: '',
   notificationMessage: '',
   notificationDisplaySeconds: 8,
+  notificationIconDataUrl: '',
 };
 
 function normalizeSettings(input: unknown): ReminderSettings {
@@ -25,7 +30,13 @@ function normalizeSettings(input: unknown): ReminderSettings {
   const interval = Number(raw.intervalMinutes);
   const displaySeconds = Number(raw.notificationDisplaySeconds);
   const safeInterval = Number.isFinite(interval)
-    ? Math.max(1, Math.min(180, Math.round(interval)))
+    ? Math.max(
+        MIN_INTERVAL_MINUTES,
+        Math.min(
+          MAX_INTERVAL_MINUTES,
+          Math.round(interval * 10) / 10,
+        ),
+      )
     : defaultSettings.intervalMinutes;
   const safeDisplaySeconds = Number.isFinite(displaySeconds)
     ? Math.max(1, Math.min(300, Math.round(displaySeconds)))
@@ -38,6 +49,14 @@ function normalizeSettings(input: unknown): ReminderSettings {
     typeof raw.notificationMessage === 'string'
       ? raw.notificationMessage.trim().slice(0, 200)
       : defaultSettings.notificationMessage;
+  const iconRaw =
+    typeof raw.notificationIconDataUrl === 'string'
+      ? raw.notificationIconDataUrl.trim()
+      : defaultSettings.notificationIconDataUrl;
+  const safeIcon =
+    iconRaw.startsWith('data:image/') && iconRaw.length <= MAX_ICON_DATA_URL_LENGTH
+      ? iconRaw
+      : '';
 
   return {
     enabled:
@@ -46,6 +65,7 @@ function normalizeSettings(input: unknown): ReminderSettings {
     notificationTitle: safeTitle,
     notificationMessage: safeMessage,
     notificationDisplaySeconds: safeDisplaySeconds,
+    notificationIconDataUrl: safeIcon,
   };
 }
 
@@ -91,11 +111,27 @@ async function loadSettings(): Promise<ReminderSettings> {
   return settings;
 }
 
+let subMinuteTimer: ReturnType<typeof setTimeout> | undefined;
+
 async function syncAlarm() {
   const settings = await loadSettings();
   await browser.alarms.clear(ALARM_NAME);
+  if (subMinuteTimer) {
+    clearTimeout(subMinuteTimer);
+    subMinuteTimer = undefined;
+  }
 
   if (!settings.enabled) {
+    return;
+  }
+
+  if (settings.intervalMinutes < 1) {
+    const intervalMs = settings.intervalMinutes * 60_000;
+    const tick = () => {
+      subMinuteTimer = setTimeout(tick, intervalMs);
+      void showNotification();
+    };
+    subMinuteTimer = setTimeout(tick, intervalMs);
     return;
   }
 
@@ -115,14 +151,32 @@ async function showNotification(): Promise<boolean> {
   const id = `sitless-${Date.now()}`;
   const title = settings.notificationTitle || t('notificationTitle');
   const message = settings.notificationMessage || t('notificationMessage');
+  const iconUrl = '/icon/128.png';
 
-  await browser.notifications.create(id, {
-    type: 'basic',
-    iconUrl: '/icon/128.png',
-    title,
-    message,
-    priority: 2,
-  });
+  let created = false;
+  const tryCustomIcon = settings.notificationIconDataUrl;
+  if (tryCustomIcon) {
+    try {
+      await browser.notifications.create(id, {
+        type: 'basic',
+        iconUrl: tryCustomIcon,
+        title,
+        message,
+        priority: 2,
+      });
+      created = true;
+    } catch {}
+  }
+
+  if (!created) {
+    await browser.notifications.create(id, {
+      type: 'basic',
+      iconUrl,
+      title,
+      message,
+      priority: 2,
+    });
+  }
 
   setTimeout(() => {
     void browser.notifications.clear(id);

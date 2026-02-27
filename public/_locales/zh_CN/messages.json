@@ -35,10 +35,22 @@
     "message": "提醒开关"
   },
   "intervalLabel": {
-    "message": "提醒间隔（分钟）"
+    "message": "提醒间隔"
+  },
+  "resetSettingsBtn": {
+    "message": "重置设置"
   },
   "notificationTitleLabel": {
     "message": "通知标题"
+  },
+  "notificationIconLabel": {
+    "message": "通知图标"
+  },
+  "notificationIconPickBtn": {
+    "message": "选择图标"
+  },
+  "notificationIconClearBtn": {
+    "message": "使用默认图标"
   },
   "notificationTitlePlaceholder": {
     "message": "留空则使用默认标题"

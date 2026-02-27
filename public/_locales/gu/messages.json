@@ -134,7 +134,7 @@
     "message": "Test notification sent"
   },
   "statusEveryInterval": {
-    "message": "Remind every $INTERVAL$",
+    "message": "દર $INTERVAL$ એ યાદ અપાવો",
     "placeholders": {
       "interval": {
         "content": "$1"
@@ -142,7 +142,7 @@
     }
   },
   "statusIntervalSeconds": {
-    "message": "$SECONDS$ seconds",
+    "message": "$SECONDS$ સેકન્ડ",
     "placeholders": {
       "seconds": {
         "content": "$1"
@@ -150,7 +150,7 @@
     }
   },
   "statusIntervalMinutes": {
-    "message": "$MINUTES$ minutes",
+    "message": "$MINUTES$ મિનિટ",
     "placeholders": {
       "minutes": {
         "content": "$1"
@@ -158,7 +158,7 @@
     }
   },
   "statusIntervalHours": {
-    "message": "$HOURS$ hours",
+    "message": "$HOURS$ કલાક",
     "placeholders": {
       "hours": {
         "content": "$1"
@@ -166,15 +166,15 @@
     }
   },
   "intervalUnitSecondsShort": {
-    "message": "sec"
+    "message": "સે"
   },
   "intervalUnitMinutesShort": {
-    "message": "min"
+    "message": "મિ"
   },
   "intervalUnitHoursShort": {
-    "message": "hour"
+    "message": "કા"
   },
   "openIconSettingsBtn": {
-    "message": "Open Icon Settings"
+    "message": "આઇકન સેટિંગ્સ ખોલો"
   }
 }

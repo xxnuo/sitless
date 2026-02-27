@@ -134,7 +134,7 @@
     "message": "Test notification sent"
   },
   "statusEveryInterval": {
-    "message": "Remind every $INTERVAL$",
+    "message": "ഓരോ $INTERVAL$ക്കും ഓർമ്മിപ്പിക്കുക",
     "placeholders": {
       "interval": {
         "content": "$1"
@@ -142,7 +142,7 @@
     }
   },
   "statusIntervalSeconds": {
-    "message": "$SECONDS$ seconds",
+    "message": "$SECONDS$ സെക്കൻഡ്",
     "placeholders": {
       "seconds": {
         "content": "$1"
@@ -150,7 +150,7 @@
     }
   },
   "statusIntervalMinutes": {
-    "message": "$MINUTES$ minutes",
+    "message": "$MINUTES$ മിനിറ്റ്",
     "placeholders": {
       "minutes": {
         "content": "$1"
@@ -158,7 +158,7 @@
     }
   },
   "statusIntervalHours": {
-    "message": "$HOURS$ hours",
+    "message": "$HOURS$ മണിക്കൂർ",
     "placeholders": {
       "hours": {
         "content": "$1"
@@ -166,15 +166,15 @@
     }
   },
   "intervalUnitSecondsShort": {
-    "message": "sec"
+    "message": "സെ"
   },
   "intervalUnitMinutesShort": {
-    "message": "min"
+    "message": "മി"
   },
   "intervalUnitHoursShort": {
-    "message": "hour"
+    "message": "മണി"
   },
   "openIconSettingsBtn": {
-    "message": "Open Icon Settings"
+    "message": "ഐക്കൺ ക്രമീകരണങ്ങൾ തുറക്കുക"
   }
 }

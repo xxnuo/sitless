@@ -134,7 +134,7 @@
     "message": "Test notification sent"
   },
   "statusEveryInterval": {
-    "message": "Remind every $INTERVAL$",
+    "message": "በየ$INTERVAL$ አስታውስ",
     "placeholders": {
       "interval": {
         "content": "$1"
@@ -142,7 +142,7 @@
     }
   },
   "statusIntervalSeconds": {
-    "message": "$SECONDS$ seconds",
+    "message": "$SECONDS$ ሰከንድ",
     "placeholders": {
       "seconds": {
         "content": "$1"
@@ -150,7 +150,7 @@
     }
   },
   "statusIntervalMinutes": {
-    "message": "$MINUTES$ minutes",
+    "message": "$MINUTES$ ደቂቃ",
     "placeholders": {
       "minutes": {
         "content": "$1"
@@ -158,7 +158,7 @@
     }
   },
   "statusIntervalHours": {
-    "message": "$HOURS$ hours",
+    "message": "$HOURS$ ሰዓት",
     "placeholders": {
       "hours": {
         "content": "$1"
@@ -166,15 +166,15 @@
     }
   },
   "intervalUnitSecondsShort": {
-    "message": "sec"
+    "message": "ሰከ"
   },
   "intervalUnitMinutesShort": {
-    "message": "min"
+    "message": "ደቂ"
   },
   "intervalUnitHoursShort": {
-    "message": "hour"
+    "message": "ሰዓ"
   },
   "openIconSettingsBtn": {
-    "message": "Open Icon Settings"
+    "message": "የአዶ ቅንብሮችን ክፈት"
   }
 }

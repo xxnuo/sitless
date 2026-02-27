@@ -134,7 +134,7 @@
     "message": "Test notification sent"
   },
   "statusEveryInterval": {
-    "message": "Remind every $INTERVAL$",
+    "message": "Нагадувати кожні $INTERVAL$",
     "placeholders": {
       "interval": {
         "content": "$1"
@@ -142,7 +142,7 @@
     }
   },
   "statusIntervalSeconds": {
-    "message": "$SECONDS$ seconds",
+    "message": "$SECONDS$ секунд",
     "placeholders": {
       "seconds": {
         "content": "$1"
@@ -150,7 +150,7 @@
     }
   },
   "statusIntervalMinutes": {
-    "message": "$MINUTES$ minutes",
+    "message": "$MINUTES$ хвилин",
     "placeholders": {
       "minutes": {
         "content": "$1"
@@ -158,7 +158,7 @@
     }
   },
   "statusIntervalHours": {
-    "message": "$HOURS$ hours",
+    "message": "$HOURS$ годин",
     "placeholders": {
       "hours": {
         "content": "$1"
@@ -166,15 +166,15 @@
     }
   },
   "intervalUnitSecondsShort": {
-    "message": "sec"
+    "message": "с"
   },
   "intervalUnitMinutesShort": {
-    "message": "min"
+    "message": "хв"
   },
   "intervalUnitHoursShort": {
-    "message": "hour"
+    "message": "год"
   },
   "openIconSettingsBtn": {
-    "message": "Open Icon Settings"
+    "message": "Відкрити налаштування значка"
   }
 }

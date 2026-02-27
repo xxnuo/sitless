@@ -134,7 +134,7 @@
     "message": "測試通知已送出"
   },
   "statusEveryInterval": {
-    "message": "每 $INTERVAL$ 提醒一次",
+    "message": "每隔 $INTERVAL$ 提醒",
     "placeholders": {
       "interval": {
         "content": "$1"
@@ -169,12 +169,12 @@
     "message": "秒"
   },
   "intervalUnitMinutesShort": {
-    "message": "分鐘"
+    "message": "分"
   },
   "intervalUnitHoursShort": {
     "message": "小時"
   },
   "openIconSettingsBtn": {
-    "message": "開啟圖示設定頁"
+    "message": "開啟圖示設定"
   }
 }

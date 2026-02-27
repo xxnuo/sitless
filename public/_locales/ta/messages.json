@@ -134,7 +134,7 @@
     "message": "Test notification sent"
   },
   "statusEveryInterval": {
-    "message": "Remind every $INTERVAL$",
+    "message": "ஒவ்வொரு $INTERVAL$க்கும் நினைவூட்டு",
     "placeholders": {
       "interval": {
         "content": "$1"
@@ -142,7 +142,7 @@
     }
   },
   "statusIntervalSeconds": {
-    "message": "$SECONDS$ seconds",
+    "message": "$SECONDS$ விநாடிகள்",
     "placeholders": {
       "seconds": {
         "content": "$1"
@@ -150,7 +150,7 @@
     }
   },
   "statusIntervalMinutes": {
-    "message": "$MINUTES$ minutes",
+    "message": "$MINUTES$ நிமிடங்கள்",
     "placeholders": {
       "minutes": {
         "content": "$1"
@@ -158,7 +158,7 @@
     }
   },
   "statusIntervalHours": {
-    "message": "$HOURS$ hours",
+    "message": "$HOURS$ மணிநேரங்கள்",
     "placeholders": {
       "hours": {
         "content": "$1"
@@ -166,15 +166,15 @@
     }
   },
   "intervalUnitSecondsShort": {
-    "message": "sec"
+    "message": "வி"
   },
   "intervalUnitMinutesShort": {
-    "message": "min"
+    "message": "நி"
   },
   "intervalUnitHoursShort": {
-    "message": "hour"
+    "message": "மணி"
   },
   "openIconSettingsBtn": {
-    "message": "Open Icon Settings"
+    "message": "ஐகான் அமைப்புகளைத் திறக்கவும்"
   }
 }

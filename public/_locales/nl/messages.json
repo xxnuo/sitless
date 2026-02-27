@@ -134,7 +134,7 @@
     "message": "Test notification sent"
   },
   "statusEveryInterval": {
-    "message": "Remind every $INTERVAL$",
+    "message": "Herinner elke $INTERVAL$",
     "placeholders": {
       "interval": {
         "content": "$1"
@@ -142,7 +142,7 @@
     }
   },
   "statusIntervalSeconds": {
-    "message": "$SECONDS$ seconds",
+    "message": "$SECONDS$ seconden",
     "placeholders": {
       "seconds": {
         "content": "$1"
@@ -150,7 +150,7 @@
     }
   },
   "statusIntervalMinutes": {
-    "message": "$MINUTES$ minutes",
+    "message": "$MINUTES$ minuten",
     "placeholders": {
       "minutes": {
         "content": "$1"
@@ -158,7 +158,7 @@
     }
   },
   "statusIntervalHours": {
-    "message": "$HOURS$ hours",
+    "message": "$HOURS$ uur",
     "placeholders": {
       "hours": {
         "content": "$1"
@@ -172,9 +172,9 @@
     "message": "min"
   },
   "intervalUnitHoursShort": {
-    "message": "hour"
+    "message": "uur"
   },
   "openIconSettingsBtn": {
-    "message": "Open Icon Settings"
+    "message": "Pictograminstellingen openen"
   }
 }

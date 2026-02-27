@@ -134,7 +134,7 @@
     "message": "Test notification sent"
   },
   "statusEveryInterval": {
-    "message": "Remind every $INTERVAL$",
+    "message": "ಪ್ರತಿ $INTERVAL$ ಗೆ ನೆನಪಿಸಿ",
     "placeholders": {
       "interval": {
         "content": "$1"
@@ -142,7 +142,7 @@
     }
   },
   "statusIntervalSeconds": {
-    "message": "$SECONDS$ seconds",
+    "message": "$SECONDS$ ಸೆಕೆಂಡು",
     "placeholders": {
       "seconds": {
         "content": "$1"
@@ -150,7 +150,7 @@
     }
   },
   "statusIntervalMinutes": {
-    "message": "$MINUTES$ minutes",
+    "message": "$MINUTES$ ನಿಮಿಷ",
     "placeholders": {
       "minutes": {
         "content": "$1"
@@ -158,7 +158,7 @@
     }
   },
   "statusIntervalHours": {
-    "message": "$HOURS$ hours",
+    "message": "$HOURS$ ಗಂಟೆ",
     "placeholders": {
       "hours": {
         "content": "$1"
@@ -166,15 +166,15 @@
     }
   },
   "intervalUnitSecondsShort": {
-    "message": "sec"
+    "message": "ಸೆ"
   },
   "intervalUnitMinutesShort": {
-    "message": "min"
+    "message": "ನಿ"
   },
   "intervalUnitHoursShort": {
-    "message": "hour"
+    "message": "ಗಂ"
   },
   "openIconSettingsBtn": {
-    "message": "Open Icon Settings"
+    "message": "ಐಕಾನ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ತೆರೆಯಿರಿ"
   }
 }

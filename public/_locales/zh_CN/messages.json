@@ -20,7 +20,7 @@
     }
   },
   "statusEveryInterval": {
-    "message": "每 $INTERVAL$ 提醒一次",
+    "message": "每隔 $INTERVAL$ 提醒",
     "placeholders": {
       "interval": {
         "content": "$1"
@@ -55,13 +55,13 @@
     "message": "秒"
   },
   "intervalUnitMinutesShort": {
-    "message": "分钟"
+    "message": "分"
   },
   "intervalUnitHoursShort": {
     "message": "小时"
   },
   "openIconSettingsBtn": {
-    "message": "打开图标设置页"
+    "message": "打开图标设置"
   },
   "expandedState": {
     "message": "已展开"

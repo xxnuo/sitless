@@ -1,7 +1,7 @@
 .popup {
   width: 340px;
   padding: 14px;
-  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
   color: #202124;
 }
 
@@ -107,16 +107,16 @@ h1 {
   align-items: flex-start;
 }
 
-input[type='range'],
-input[type='text'],
-input[type='number'],
+input[type="range"],
+input[type="text"],
+input[type="number"],
 textarea {
   width: 100%;
   box-sizing: border-box;
 }
 
-input[type='text'],
-input[type='number'],
+input[type="text"],
+input[type="number"],
 textarea {
   border: 1px solid #dadce0;
   border-radius: 8px;

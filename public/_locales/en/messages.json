@@ -1,12 +1,12 @@
 {
   "extName": {
-    "message": "SitLess"
+    "message": "Sit Less"
   },
   "extDesc": {
     "message": "Sedentary reminder extension"
   },
   "popupTitle": {
-    "message": "SitLess"
+    "message": "Sit Less"
   },
   "statusPaused": {
     "message": "Paused"

@@ -10,9 +10,7 @@ type ReminderSettings = {
   notificationDisplaySeconds: number;
 };
 
-type Message =
-  | { type: 'sync-reminder' }
-  | { type: 'test-notification' };
+type Message = { type: 'sync-reminder' } | { type: 'test-notification' };
 
 const defaultSettings: ReminderSettings = {
   enabled: true,
@@ -42,7 +40,8 @@ function normalizeSettings(input: unknown): ReminderSettings {
       : defaultSettings.notificationMessage;
 
   return {
-    enabled: typeof raw.enabled === 'boolean' ? raw.enabled : defaultSettings.enabled,
+    enabled:
+      typeof raw.enabled === 'boolean' ? raw.enabled : defaultSettings.enabled,
     intervalMinutes: safeInterval,
     notificationTitle: safeTitle,
     notificationMessage: safeMessage,
@@ -51,23 +50,30 @@ function normalizeSettings(input: unknown): ReminderSettings {
 }
 
 function t(key: string, substitutions?: string | string[]): string {
-  return (browser.i18n.getMessage as (name: string, substitutions?: string | string[]) => string)(
-    key,
-    substitutions,
-  ) || key;
+  return (
+    (
+      browser.i18n.getMessage as (
+        name: string,
+        substitutions?: string | string[],
+      ) => string
+    )(key, substitutions) || key
+  );
 }
 
 async function hasNotificationPermission(): Promise<boolean> {
   try {
-    const contains = await browser.permissions.contains({ permissions: ['notifications'] });
+    const contains = await browser.permissions.contains({
+      permissions: ['notifications'],
+    });
     if (contains) {
       return true;
     }
   } catch {}
 
   try {
-    const getLevel = (browser.notifications as { getPermissionLevel?: () => Promise<string> })
-      .getPermissionLevel;
+    const getLevel = (
+      browser.notifications as { getPermissionLevel?: () => Promise<string> }
+    ).getPermissionLevel;
     if (!getLevel) {
       return false;
     }

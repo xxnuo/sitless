@@ -1,12 +1,12 @@
 {
   "extName": {
-    "message": "SitLess"
+    "message": "Sit Less"
   },
   "extDesc": {
     "message": "久坐提醒插件"
   },
   "popupTitle": {
-    "message": "SitLess"
+    "message": "Sit Less"
   },
   "statusPaused": {
     "message": "已暂停"

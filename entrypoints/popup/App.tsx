@@ -14,7 +14,6 @@ type TestNotificationResponse = {
 };
 
 const STORAGE_KEY = 'sitless-settings';
-const INSTALLED_AT_KEY = 'sitless-installed-at';
 const defaultSettings: ReminderSettings = {
   enabled: true,
   intervalMinutes: 45,
@@ -43,7 +42,8 @@ function normalizeSettings(input: unknown): ReminderSettings {
       : defaultSettings.notificationMessage;
 
   return {
-    enabled: typeof raw.enabled === 'boolean' ? raw.enabled : defaultSettings.enabled,
+    enabled:
+      typeof raw.enabled === 'boolean' ? raw.enabled : defaultSettings.enabled,
     intervalMinutes: safeInterval,
     notificationTitle: safeTitle,
     notificationMessage: safeMessage,
@@ -52,23 +52,30 @@ function normalizeSettings(input: unknown): ReminderSettings {
 }
 
 function t(key: string, substitutions?: string | string[]): string {
-  return (browser.i18n.getMessage as (name: string, substitutions?: string | string[]) => string)(
-    key,
-    substitutions,
-  ) || key;
+  return (
+    (
+      browser.i18n.getMessage as (
+        name: string,
+        substitutions?: string | string[],
+      ) => string
+    )(key, substitutions) || key
+  );
 }
 
 async function hasNotificationPermission(): Promise<boolean> {
   try {
-    const contains = await browser.permissions.contains({ permissions: ['notifications'] });
+    const contains = await browser.permissions.contains({
+      permissions: ['notifications'],
+    });
     if (contains) {
       return true;
     }
   } catch {}
 
   try {
-    const getLevel = (browser.notifications as { getPermissionLevel?: () => Promise<string> })
-      .getPermissionLevel;
+    const getLevel = (
+      browser.notifications as { getPermissionLevel?: () => Promise<string> }
+    ).getPermissionLevel;
     if (!getLevel) {
       return false;
     }
@@ -85,22 +92,18 @@ function App() {
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [reminderOpen, setReminderOpen] = useState(true);
   const [notificationOpen, setNotificationOpen] = useState(false);
-  const [installedAt, setInstalledAt] = useState<number | null>(null);
 
   useEffect(() => {
     let active = true;
 
     void Promise.all([
       browser.storage.local.get(STORAGE_KEY),
-      browser.storage.local.get(INSTALLED_AT_KEY),
       hasNotificationPermission(),
-    ]).then(([stored, installedAtStore, permission]) => {
+    ]).then(([stored, permission]) => {
       if (!active) return;
       const next = normalizeSettings(stored[STORAGE_KEY]);
       setSettings(next);
       setPermissionGranted(permission);
-      const value = installedAtStore[INSTALLED_AT_KEY];
-      setInstalledAt(typeof value === 'number' ? value : null);
       setLoading(false);
     });
 
@@ -155,6 +158,7 @@ function App() {
         <div className="banner">
           <div className="banner-text">{t('permissionBannerText')}</div>
           <button
+            type="button"
             className="banner-action"
             onClick={() => void requestPermission()}
             disabled={loading}
@@ -193,7 +197,9 @@ function App() {
                 id="enabled"
                 type="checkbox"
                 checked={settings.enabled}
-                onChange={(e) => void save({ ...settings, enabled: e.target.checked })}
+                onChange={(e) =>
+                  void save({ ...settings, enabled: e.target.checked })
+                }
                 disabled={loading}
               />
             </label>
@@ -208,7 +214,10 @@ function App() {
                 step={1}
                 value={settings.intervalMinutes}
                 onChange={(e) =>
-                  void save({ ...settings, intervalMinutes: Number(e.target.value) })
+                  void save({
+                    ...settings,
+                    intervalMinutes: Number(e.target.value),
+                  })
                 }
                 disabled={loading || !settings.enabled}
               />
@@ -241,20 +250,17 @@ function App() {
           <div className="section-body">
             <p className="permission">{permissionText}</p>
 
-            <div className="actions">
-              <button onClick={() => void refreshPermission()} disabled={loading}>
-                {t('refreshPermissionBtn')}
-              </button>
-              <button onClick={() => void requestPermission()} disabled={loading}>
-                {t('requestPermissionBtn')}
-              </button>
-            </div>
-
-            <div className="actions single">
-              <button onClick={() => void testNotification()} disabled={loading}>
-                {t('testNotificationBtn')}
-              </button>
-            </div>
+            {!permissionGranted ? (
+              <div className="actions">
+                <button
+                  type="button"
+                  onClick={() => void requestPermission()}
+                  disabled={loading}
+                >
+                  {t('requestPermissionBtn')}
+                </button>
+              </div>
+            ) : null}
 
             <label className="column" htmlFor="notificationTitle">
               <span>{t('notificationTitleLabel')}</span>
@@ -266,7 +272,10 @@ function App() {
                 placeholder={t('notificationTitlePlaceholder')}
                 onChange={(e) =>
                   setSettings((prev) =>
-                    normalizeSettings({ ...prev, notificationTitle: e.target.value }),
+                    normalizeSettings({
+                      ...prev,
+                      notificationTitle: e.target.value,
+                    }),
                   )
                 }
                 onBlur={() => void save(settings)}
@@ -284,13 +293,26 @@ function App() {
                 placeholder={t('notificationMessagePlaceholder')}
                 onChange={(e) =>
                   setSettings((prev) =>
-                    normalizeSettings({ ...prev, notificationMessage: e.target.value }),
+                    normalizeSettings({
+                      ...prev,
+                      notificationMessage: e.target.value,
+                    }),
                   )
                 }
                 onBlur={() => void save(settings)}
                 disabled={loading}
               />
             </label>
+
+            <div className="actions single">
+              <button
+                type="button"
+                onClick={() => void testNotification()}
+                disabled={loading}
+              >
+                {t('testNotificationBtn')}
+              </button>
+            </div>
 
             <label className="column" htmlFor="notificationDisplaySeconds">
               <span>{t('notificationDisplaySecondsLabel')}</span>

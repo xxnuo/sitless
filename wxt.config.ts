@@ -6,7 +6,6 @@ export default defineConfig({
     default_locale: 'en',
     name: '__MSG_extName__',
     description: '__MSG_extDesc__',
-    permissions: ['alarms', 'storage'],
-    optional_permissions: ['notifications'],
+    permissions: ['alarms', 'storage', 'notifications'],
   },
 });

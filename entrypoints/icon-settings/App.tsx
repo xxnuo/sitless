@@ -71,7 +71,7 @@ const defaultSettings: ReminderSettings = {
   intervalMinutes: 45,
   notificationTitle: '',
   notificationMessage: '',
-  notificationDisplaySeconds: 8,
+  notificationDisplaySeconds: 30,
   notificationIconDataUrl: '',
 };
 
@@ -200,51 +200,51 @@ function getContrastColor(hex: string): string {
   return luminance > 0.6 ? '#111827' : '#ffffff';
 }
 
-const builtinIconComponents: IconType[] = [
-  CiTimer,
-  IoIosTimer,
-  IoMdTimer,
-  IoTimer,
-  IoTimerOutline,
-  IoTimerSharp,
-  MdAvTimer,
-  MdOutlineAvTimer,
-  MdOutlineTimer,
-  MdOutlineTimer10,
-  MdOutlineTimer10Select,
-  MdOutlineTimer3,
-  MdOutlineTimer3Select,
-  MdOutlineTimerOff,
-  MdTimer,
-  MdTimer10,
-  MdTimer10Select,
-  MdTimer3,
-  MdTimer3Select,
-  MdTimerOff,
-  LuTimer,
-  LuTimerOff,
-  LuTimerReset,
-  GiHeavyTimer,
-  RiTimer2Fill,
-  RiTimer2Line,
-  RiTimerFill,
-  RiTimerFlashFill,
-  RiTimerFlashLine,
-  RiTimerLine,
-  SiStagetimer,
-  BiSolidTimer,
-  BiTimer,
-  CgTimer,
-  TfiTimer,
-  RxCountdownTimer,
-  RxLapTimer,
-  RxTimer,
-  PiTimer,
-  PiTimerBold,
-  PiTimerDuotone,
-  PiTimerFill,
-  PiTimerLight,
-  PiTimerThin,
+const builtinIcons: { key: string; Icon: IconType }[] = [
+  { key: 'CiTimer', Icon: CiTimer },
+  { key: 'IoIosTimer', Icon: IoIosTimer },
+  { key: 'IoMdTimer', Icon: IoMdTimer },
+  { key: 'IoTimer', Icon: IoTimer },
+  { key: 'IoTimerOutline', Icon: IoTimerOutline },
+  { key: 'IoTimerSharp', Icon: IoTimerSharp },
+  { key: 'MdAvTimer', Icon: MdAvTimer },
+  { key: 'MdOutlineAvTimer', Icon: MdOutlineAvTimer },
+  { key: 'MdOutlineTimer', Icon: MdOutlineTimer },
+  { key: 'MdOutlineTimer10', Icon: MdOutlineTimer10 },
+  { key: 'MdOutlineTimer10Select', Icon: MdOutlineTimer10Select },
+  { key: 'MdOutlineTimer3', Icon: MdOutlineTimer3 },
+  { key: 'MdOutlineTimer3Select', Icon: MdOutlineTimer3Select },
+  { key: 'MdOutlineTimerOff', Icon: MdOutlineTimerOff },
+  { key: 'MdTimer', Icon: MdTimer },
+  { key: 'MdTimer10', Icon: MdTimer10 },
+  { key: 'MdTimer10Select', Icon: MdTimer10Select },
+  { key: 'MdTimer3', Icon: MdTimer3 },
+  { key: 'MdTimer3Select', Icon: MdTimer3Select },
+  { key: 'MdTimerOff', Icon: MdTimerOff },
+  { key: 'LuTimer', Icon: LuTimer },
+  { key: 'LuTimerOff', Icon: LuTimerOff },
+  { key: 'LuTimerReset', Icon: LuTimerReset },
+  { key: 'GiHeavyTimer', Icon: GiHeavyTimer },
+  { key: 'RiTimer2Fill', Icon: RiTimer2Fill },
+  { key: 'RiTimer2Line', Icon: RiTimer2Line },
+  { key: 'RiTimerFill', Icon: RiTimerFill },
+  { key: 'RiTimerFlashFill', Icon: RiTimerFlashFill },
+  { key: 'RiTimerFlashLine', Icon: RiTimerFlashLine },
+  { key: 'RiTimerLine', Icon: RiTimerLine },
+  { key: 'SiStagetimer', Icon: SiStagetimer },
+  { key: 'BiSolidTimer', Icon: BiSolidTimer },
+  { key: 'BiTimer', Icon: BiTimer },
+  { key: 'CgTimer', Icon: CgTimer },
+  { key: 'TfiTimer', Icon: TfiTimer },
+  { key: 'RxCountdownTimer', Icon: RxCountdownTimer },
+  { key: 'RxLapTimer', Icon: RxLapTimer },
+  { key: 'RxTimer', Icon: RxTimer },
+  { key: 'PiTimer', Icon: PiTimer },
+  { key: 'PiTimerBold', Icon: PiTimerBold },
+  { key: 'PiTimerDuotone', Icon: PiTimerDuotone },
+  { key: 'PiTimerFill', Icon: PiTimerFill },
+  { key: 'PiTimerLight', Icon: PiTimerLight },
+  { key: 'PiTimerThin', Icon: PiTimerThin },
 ];
 
 function App() {
@@ -503,10 +503,10 @@ function App() {
                 </Label>
               </div>
               <div className="grid max-h-[160px] grid-cols-5 gap-2 overflow-y-auto pr-1 sm:grid-cols-6 md:grid-cols-8">
-                {builtinIconComponents.map((Icon, idx) => (
+                {builtinIcons.map(({ key, Icon }, idx) => (
                   <Button
                     type="button"
-                    key={`${idx}`}
+                    key={key}
                     variant="outline"
                     className="h-12 w-12 p-0"
                     onClick={() => void onPickBuiltin(Icon)}

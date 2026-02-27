@@ -21,7 +21,7 @@ const defaultSettings: ReminderSettings = {
   intervalMinutes: 45,
   notificationTitle: '',
   notificationMessage: '',
-  notificationDisplaySeconds: 8,
+  notificationDisplaySeconds: 30,
   notificationIconDataUrl: '',
 };
 

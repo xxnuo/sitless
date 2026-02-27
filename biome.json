@@ -6,6 +6,7 @@
     "useIgnoreFile": true
   },
   "files": {
+    "includes": ["**", "!components/ui"],
     "ignoreUnknown": false
   },
   "formatter": {

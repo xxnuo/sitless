@@ -132,5 +132,49 @@
   },
   "iconSettingsTestNotificationSent": {
     "message": "測試通知已送出"
+  },
+  "statusEveryInterval": {
+    "message": "每 $INTERVAL$ 提醒一次",
+    "placeholders": {
+      "interval": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusIntervalSeconds": {
+    "message": "$SECONDS$ 秒",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusIntervalMinutes": {
+    "message": "$MINUTES$ 分鐘",
+    "placeholders": {
+      "minutes": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusIntervalHours": {
+    "message": "$HOURS$ 小時",
+    "placeholders": {
+      "hours": {
+        "content": "$1"
+      }
+    }
+  },
+  "intervalUnitSecondsShort": {
+    "message": "秒"
+  },
+  "intervalUnitMinutesShort": {
+    "message": "分鐘"
+  },
+  "intervalUnitHoursShort": {
+    "message": "小時"
+  },
+  "openIconSettingsBtn": {
+    "message": "開啟圖示設定頁"
   }
 }

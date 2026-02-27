@@ -1,3 +1,5 @@
+import { t } from '@/lib/i18n';
+
 const ALARM_NAME = 'sitless-reminder';
 const STORAGE_KEY = 'sitless-settings';
 const INSTALLED_AT_KEY = 'sitless-installed-at';
@@ -67,17 +69,6 @@ function normalizeSettings(input: unknown): ReminderSettings {
     notificationDisplaySeconds: safeDisplaySeconds,
     notificationIconDataUrl: safeIcon,
   };
-}
-
-function t(key: string, substitutions?: string | string[]): string {
-  return (
-    (
-      browser.i18n.getMessage as (
-        name: string,
-        substitutions?: string | string[],
-      ) => string
-    )(key, substitutions) || key
-  );
 }
 
 async function hasNotificationPermission(): Promise<boolean> {

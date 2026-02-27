@@ -48,6 +48,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { t } from '@/lib/i18n';
 
 type ReminderSettings = {
   enabled: boolean;
@@ -246,17 +247,6 @@ const builtinIcons: { key: string; Icon: IconType }[] = [
   { key: 'PiTimerLight', Icon: PiTimerLight },
   { key: 'PiTimerThin', Icon: PiTimerThin },
 ];
-
-function t(key: string, substitutions?: string | string[]): string {
-  return (
-    (
-      browser.i18n.getMessage as (
-        name: string,
-        substitutions?: string | string[],
-      ) => string
-    )(key, substitutions) || key
-  );
-}
 
 function App() {
   const [settings, setSettings] = useState<ReminderSettings>(defaultSettings);

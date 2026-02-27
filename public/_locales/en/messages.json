@@ -147,5 +147,49 @@
   },
   "iconSettingsTestNotificationSent": {
     "message": "Test notification sent"
+  },
+  "statusEveryInterval": {
+    "message": "Remind every $INTERVAL$",
+    "placeholders": {
+      "interval": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusIntervalSeconds": {
+    "message": "$SECONDS$ seconds",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusIntervalMinutes": {
+    "message": "$MINUTES$ minutes",
+    "placeholders": {
+      "minutes": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusIntervalHours": {
+    "message": "$HOURS$ hours",
+    "placeholders": {
+      "hours": {
+        "content": "$1"
+      }
+    }
+  },
+  "intervalUnitSecondsShort": {
+    "message": "sec"
+  },
+  "intervalUnitMinutesShort": {
+    "message": "min"
+  },
+  "intervalUnitHoursShort": {
+    "message": "hour"
+  },
+  "openIconSettingsBtn": {
+    "message": "Open Icon Settings"
   }
 }

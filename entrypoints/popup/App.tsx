@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
+import { t } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
 type ReminderSettings = {
@@ -134,17 +135,6 @@ function normalizeSettings(input: unknown): ReminderSettings {
   };
 }
 
-function t(key: string, substitutions?: string | string[]): string {
-  return (
-    (
-      browser.i18n.getMessage as (
-        name: string,
-        substitutions?: string | string[],
-      ) => string
-    )(key, substitutions) || key
-  );
-}
-
 async function hasNotificationPermission(): Promise<boolean> {
   try {
     const contains = await browser.permissions.contains({
@@ -247,41 +237,26 @@ function App() {
     };
   }, []);
 
-  const uiLanguage = useMemo(() => {
-    try {
-      return browser.i18n.getUILanguage?.() || '';
-    } catch {
-      return '';
-    }
-  }, []);
-
   const statusIntervalText = useMemo(() => {
     const minutes = settings.intervalMinutes;
     if (!Number.isFinite(minutes)) return String(minutes);
     if (minutes < 1) {
       const seconds = Math.round(minutes * 60);
-      if (uiLanguage.startsWith('zh')) return `${seconds} 秒`;
-      if (uiLanguage.startsWith('en')) return `${seconds} seconds`;
-      return String(minutes);
+      return t('statusIntervalSeconds', String(seconds));
     }
     if (minutes >= 60) {
       const hours = minutes / 60;
-      if (uiLanguage.startsWith('zh') && Math.abs(hours - Math.round(hours)) < 1e-9)
-        return `${hours} 小时`;
-      if (uiLanguage.startsWith('en') && Math.abs(hours - Math.round(hours)) < 1e-9)
-        return `${hours} hours`;
+      if (Math.abs(hours - Math.round(hours)) < 1e-9) {
+        return t('statusIntervalHours', String(hours));
+      }
     }
-    if (uiLanguage.startsWith('zh')) return `${minutes} 分钟`;
-    if (uiLanguage.startsWith('en')) return `${minutes} minutes`;
-    return String(minutes);
-  }, [settings.intervalMinutes, uiLanguage]);
+    return t('statusIntervalMinutes', String(minutes));
+  }, [settings.intervalMinutes]);
 
   const statusText = useMemo(() => {
     if (!settings.enabled) return t('statusPaused');
-    if (uiLanguage.startsWith('zh')) return `每 ${statusIntervalText} 提醒一次`;
-    if (uiLanguage.startsWith('en')) return `Remind every ${statusIntervalText}`;
-    return t('statusEveryMinutes', String(settings.intervalMinutes));
-  }, [settings, statusIntervalText, uiLanguage]);
+    return t('statusEveryInterval', statusIntervalText);
+  }, [settings.enabled, statusIntervalText]);
 
   const permissionText = useMemo(() => {
     return permissionGranted ? t('permissionGranted') : t('permissionDenied');
@@ -356,10 +331,7 @@ function App() {
     } catch {}
   }
 
-  const iconSettingsButtonText = useMemo(() => {
-    if (uiLanguage.startsWith('zh')) return '打开图标设置页';
-    return 'Open Icon Settings';
-  }, [uiLanguage]);
+  const iconSettingsButtonText = t('openIconSettingsBtn');
 
   useEffect(() => {
     const onFocus = () => {
@@ -394,11 +366,12 @@ function App() {
   const showPermissionBanner = !loading && !permissionGranted;
 
   const unitLabels = useMemo(() => {
-    if (uiLanguage.startsWith('zh')) {
-      return { s: '秒', m: '分钟', h: '小时' } as const;
-    }
-    return { s: 'sec', m: 'min', h: 'hour' } as const;
-  }, [uiLanguage]);
+    return {
+      s: t('intervalUnitSecondsShort'),
+      m: t('intervalUnitMinutesShort'),
+      h: t('intervalUnitHoursShort'),
+    } as const;
+  }, []);
 
   const intervalMin = intervalUnit === 's' ? 6 : intervalUnit === 'h' ? 0.1 : 1;
   const intervalMax =

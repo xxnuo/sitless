@@ -1,5 +1,4 @@
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-import { ChevronDown } from 'lucide-react';
 import { BiTimer } from 'react-icons/bi';
 import { IoNotificationsOutline } from 'react-icons/io5';
 import { Badge } from '@/components/ui/badge';
@@ -8,10 +7,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from '@/components/ui/native-select';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import { t } from '@/lib/i18n';
-import { cn } from '@/lib/utils';
 
 type ReminderSettings = {
   enabled: boolean;
@@ -465,12 +467,11 @@ function App() {
                     }}
                     disabled={loading || !settings.enabled}
                   />
-                  <div className="relative w-[84px] shrink-0">
-                    <select
+                  <div className="w-[84px] shrink-0">
+                    <NativeSelect
+                      className="w-full"
+                      size="default"
                       value={intervalUnit}
-                      className={cn(
-                        'border-input bg-background focus-visible:border-ring focus-visible:ring-ring/50 h-9 w-full appearance-none rounded-md border px-2 pr-7 text-sm outline-none focus-visible:ring-[3px]',
-                      )}
                       onChange={(e) => {
                         const nextUnit = e.target.value as IntervalUnit;
                         const currentMinutes = intervalToMinutes(intervalValue, intervalUnit);
@@ -490,11 +491,10 @@ function App() {
                       }}
                       disabled={loading || !settings.enabled}
                     >
-                      <option value="s">{unitLabels.s}</option>
-                      <option value="m">{unitLabels.m}</option>
-                      <option value="h">{unitLabels.h}</option>
-                    </select>
-                    <ChevronDown className="text-muted-foreground pointer-events-none absolute top-1/2 right-2 size-4 -translate-y-1/2" />
+                      <NativeSelectOption value="s">{unitLabels.s}</NativeSelectOption>
+                      <NativeSelectOption value="m">{unitLabels.m}</NativeSelectOption>
+                      <NativeSelectOption value="h">{unitLabels.h}</NativeSelectOption>
+                    </NativeSelect>
                   </div>
                 </div>
               </div>

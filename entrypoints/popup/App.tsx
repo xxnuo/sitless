@@ -65,49 +65,6 @@ function clampInterval(value: number, unit: IntervalUnit): number {
   return Math.round(safe * 10) / 10;
 }
 
-async function fileToSquareDataUrl(file: File, size: number): Promise<string> {
-  const objectUrl = URL.createObjectURL(file);
-  try {
-    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => resolve(img);
-      img.onerror = () => reject(new Error('image-load-failed'));
-      img.src = objectUrl;
-    });
-    const canvas = document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      return '';
-    }
-    const sourceSize = Math.min(image.width, image.height);
-    const sx = Math.max(0, Math.floor((image.width - sourceSize) / 2));
-    const sy = Math.max(0, Math.floor((image.height - sourceSize) / 2));
-    ctx.clearRect(0, 0, size, size);
-    ctx.drawImage(image, sx, sy, sourceSize, sourceSize, 0, 0, size, size);
-    const pngDataUrl = canvas.toDataURL('image/png');
-    if (pngDataUrl.length <= MAX_ICON_DATA_URL_LENGTH) return pngDataUrl;
-    const jpeg90 = canvas.toDataURL('image/jpeg', 0.9);
-    if (jpeg90.length <= MAX_ICON_DATA_URL_LENGTH) return jpeg90;
-    return canvas.toDataURL('image/jpeg', 0.75);
-  } finally {
-    URL.revokeObjectURL(objectUrl);
-  }
-}
-
-async function fileToDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = typeof reader.result === 'string' ? reader.result : '';
-      resolve(result);
-    };
-    reader.onerror = () => reject(new Error('file-read-failed'));
-    reader.readAsDataURL(file);
-  });
-}
-
 function normalizeUiState(input: unknown): PopupUiState {
   const raw = (input ?? {}) as Partial<PopupUiState>;
   return {
@@ -213,10 +170,8 @@ function App() {
   const [intervalValue, setIntervalValue] = useState<number>(
     defaultSettings.intervalMinutes,
   );
-  const [iconMessage, setIconMessage] = useState('');
   const settingsRef = useRef(settings);
   const uiStateRef = useRef<PopupUiState>(defaultUiState);
-  const notificationIconInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     settingsRef.current = settings;
@@ -347,65 +302,65 @@ function App() {
         notificationTitle: defaultSettings.notificationTitle,
         notificationMessage: defaultSettings.notificationMessage,
         notificationDisplaySeconds: defaultSettings.notificationDisplaySeconds,
-        notificationIconDataUrl: defaultSettings.notificationIconDataUrl,
       }),
     );
   }
 
-  async function setDefaultNotificationIcon() {
-    await save(
-      normalizeSettings({
-        ...settingsRef.current,
-        notificationIconDataUrl: '',
-      }),
-    );
-  }
-
-  async function onPickNotificationIcon(file: File) {
-    console.log('[icon] onPickNotificationIcon called, file:', file.name, file.type, file.size);
-    setIconMessage('');
+  async function openIconSettingsPage() {
     try {
-      const rawDataUrl = await fileToDataUrl(file);
-      console.log('[icon] fileToDataUrl result length:', rawDataUrl.length, 'prefix:', rawDataUrl.slice(0, 40));
-      let dataUrl = rawDataUrl;
-      try {
-        const squareDataUrl = await fileToSquareDataUrl(file, 128);
-        console.log('[icon] fileToSquareDataUrl result length:', squareDataUrl.length, 'prefix:', squareDataUrl.slice(0, 40));
-        if (squareDataUrl) {
-          dataUrl = squareDataUrl;
-        }
-      } catch (err) {
-        console.warn('[icon] fileToSquareDataUrl failed:', err);
-      }
-      console.log('[icon] final dataUrl length:', dataUrl.length, 'starts with data:image/:', dataUrl.startsWith('data:image/'));
-      if (!dataUrl) {
-        setIconMessage('图标读取失败');
-        return;
-      }
-      const next = normalizeSettings({
-        ...settingsRef.current,
-        notificationIconDataUrl: dataUrl,
+      await browser.tabs.create({
+        url: browser.runtime.getURL('/icon-settings.html' as never),
       });
-      console.log('[icon] after normalizeSettings, iconDataUrl length:', next.notificationIconDataUrl.length);
-      if (!next.notificationIconDataUrl) {
-        setIconMessage('图标过大或格式不支持');
-        return;
-      }
-      await save(next);
-      console.log('[icon] save() done, settingsRef.current iconDataUrl length:', settingsRef.current.notificationIconDataUrl.length);
-      const stored = await browser.storage.local.get(STORAGE_KEY);
-      const persisted = normalizeSettings(stored[STORAGE_KEY]);
-      console.log('[icon] storage verify, persisted iconDataUrl length:', persisted.notificationIconDataUrl.length);
-      if (!persisted.notificationIconDataUrl) {
-        setIconMessage('图标保存失败');
-        return;
-      }
-      setIconMessage('图标已更新');
-    } catch (err) {
-      console.error('[icon] onPickNotificationIcon error:', err);
-      setIconMessage('图标设置失败');
-    }
+    } catch {}
+    try {
+      window.close();
+    } catch {}
   }
+
+  const iconSettingsButtonText = useMemo(() => {
+    if (uiLanguage.startsWith('zh')) return '打开图标设置页';
+    return 'Open Icon Settings';
+  }, [uiLanguage]);
+
+  const iconSettingsHintText = useMemo(() => {
+    if (uiLanguage.startsWith('zh')) return '上传图片或选择内置图标';
+    return 'Upload or pick a built-in icon';
+  }, [uiLanguage]);
+
+  const currentIconText = useMemo(() => {
+    if (uiLanguage.startsWith('zh')) return settings.notificationIconDataUrl ? '已设置自定义图标' : '当前为默认图标';
+    return settings.notificationIconDataUrl ? 'Custom icon in use' : 'Using default icon';
+  }, [settings.notificationIconDataUrl, uiLanguage]);
+  
+  useEffect(() => {
+    const onFocus = () => {
+      void browser.storage.local.get(STORAGE_KEY).then((stored) => {
+        const next = normalizeSettings(stored[STORAGE_KEY]);
+        settingsRef.current = next;
+        setSettings(next);
+      });
+    };
+    window.addEventListener('focus', onFocus);
+    return () => {
+      window.removeEventListener('focus', onFocus);
+    };
+  }, []);
+  
+  useEffect(() => {
+    const onStorageChanged = (
+      changes: Record<string, { newValue?: unknown }>,
+      area: string,
+    ) => {
+      if (area !== 'local' || !changes[STORAGE_KEY]?.newValue) return;
+      const next = normalizeSettings(changes[STORAGE_KEY].newValue);
+      settingsRef.current = next;
+      setSettings(next);
+    };
+    browser.storage.onChanged.addListener(onStorageChanged);
+    return () => {
+      browser.storage.onChanged.removeListener(onStorageChanged);
+    };
+  }, []);
 
   const showPermissionBanner = !loading && !permissionGranted;
 
@@ -625,38 +580,15 @@ function App() {
                 <div className="icon-controls">
                   <button
                     type="button"
-                    onClick={() => notificationIconInputRef.current?.click()}
+                    onClick={() => void openIconSettingsPage()}
                     disabled={loading}
                   >
-                    {t('notificationIconPickBtn')}
+                    {iconSettingsButtonText}
                   </button>
-                  <input
-                    ref={notificationIconInputRef}
-                    className="icon-file-hidden"
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.currentTarget.files?.[0];
-                      console.log('[icon] file input onChange, file:', file?.name, file?.type, file?.size);
-                      e.currentTarget.value = '';
-                      if (file) void onPickNotificationIcon(file);
-                    }}
-                    disabled={loading}
-                  />
+                  
                 </div>
               </div>
-              {iconMessage ? <p className="icon-message">{iconMessage}</p> : null}
-              {settings.notificationIconDataUrl ? (
-                <div className="icon-actions">
-                  <button
-                    type="button"
-                    onClick={() => void setDefaultNotificationIcon()}
-                    disabled={loading}
-                  >
-                    {t('notificationIconClearBtn')}
-                  </button>
-                </div>
-              ) : null}
+              
             </label>
 
             <label className="column" htmlFor="notificationMessage">

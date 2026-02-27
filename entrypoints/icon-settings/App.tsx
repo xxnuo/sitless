@@ -1,28 +1,37 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import type { IconType } from 'react-icons';
-import { CiTimer } from 'react-icons/ci';
-import { CgTimer } from 'react-icons/cg';
 import { BiSolidTimer, BiTimer } from 'react-icons/bi';
+import { CgTimer } from 'react-icons/cg';
+import { CiTimer } from 'react-icons/ci';
+import { GiHeavyTimer } from 'react-icons/gi';
 import { IoIosTimer, IoMdTimer } from 'react-icons/io';
 import { IoTimer, IoTimerOutline, IoTimerSharp } from 'react-icons/io5';
+import { LuTimer, LuTimerOff, LuTimerReset } from 'react-icons/lu';
 import {
   MdAvTimer,
   MdOutlineAvTimer,
   MdOutlineTimer,
-  MdOutlineTimer10,
-  MdOutlineTimer10Select,
   MdOutlineTimer3,
   MdOutlineTimer3Select,
+  MdOutlineTimer10,
+  MdOutlineTimer10Select,
   MdOutlineTimerOff,
   MdTimer,
-  MdTimer10,
-  MdTimer10Select,
   MdTimer3,
   MdTimer3Select,
+  MdTimer10,
+  MdTimer10Select,
   MdTimerOff,
 } from 'react-icons/md';
-import { LuTimer, LuTimerOff, LuTimerReset } from 'react-icons/lu';
-import { GiHeavyTimer } from 'react-icons/gi';
+import {
+  PiTimer,
+  PiTimerBold,
+  PiTimerDuotone,
+  PiTimerFill,
+  PiTimerLight,
+  PiTimerThin,
+} from 'react-icons/pi';
 import {
   RiTimer2Fill,
   RiTimer2Line,
@@ -31,16 +40,14 @@ import {
   RiTimerFlashLine,
   RiTimerLine,
 } from 'react-icons/ri';
+import { RxCountdownTimer, RxLapTimer, RxTimer } from 'react-icons/rx';
 import { SiStagetimer } from 'react-icons/si';
 import { TfiTimer } from 'react-icons/tfi';
-import { RxCountdownTimer, RxLapTimer, RxTimer } from 'react-icons/rx';
-import { PiTimer, PiTimerBold, PiTimerDuotone, PiTimerFill, PiTimerLight, PiTimerThin } from 'react-icons/pi';
-import { renderToStaticMarkup } from 'react-dom/server';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 
 type ReminderSettings = {
   enabled: boolean;
@@ -75,10 +82,7 @@ function normalizeSettings(input: unknown): ReminderSettings {
   const safeInterval = Number.isFinite(interval)
     ? Math.max(
         MIN_INTERVAL_MINUTES,
-        Math.min(
-          MAX_INTERVAL_MINUTES,
-          Math.round(interval * 10) / 10,
-        ),
+        Math.min(MAX_INTERVAL_MINUTES, Math.round(interval * 10) / 10),
       )
     : defaultSettings.intervalMinutes;
   const safeDisplaySeconds = Number.isFinite(displaySeconds)
@@ -97,7 +101,8 @@ function normalizeSettings(input: unknown): ReminderSettings {
       ? raw.notificationIconDataUrl.trim()
       : defaultSettings.notificationIconDataUrl;
   const safeIcon =
-    iconRaw.startsWith('data:image/') && iconRaw.length <= MAX_ICON_DATA_URL_LENGTH
+    iconRaw.startsWith('data:image/') &&
+    iconRaw.length <= MAX_ICON_DATA_URL_LENGTH
       ? iconRaw
       : '';
 
@@ -159,7 +164,9 @@ async function iconComponentToPngDataUrl(
   canvas.height = 128;
   const ctx = canvas.getContext('2d');
   if (!ctx) return '';
-  const svg = ensureSvgXmlns(renderToStaticMarkup(<Icon size={84} color={fg} />));
+  const svg = ensureSvgXmlns(
+    renderToStaticMarkup(<Icon size={84} color={fg} />),
+  );
   const image = await new Promise<HTMLImageElement>((resolve, reject) => {
     const img = new Image();
     img.onload = () => resolve(img);
@@ -291,7 +298,10 @@ function App() {
     };
   }, [uiLanguage]);
 
-  async function saveIcon(notificationIconDataUrl: string, successMessage: string) {
+  async function saveIcon(
+    notificationIconDataUrl: string,
+    successMessage: string,
+  ) {
     setSaving(true);
     try {
       const stored = await browser.storage.local.get(STORAGE_KEY);
@@ -355,7 +365,9 @@ function App() {
 
   async function onPickBuiltin(Icon: IconType) {
     setMessage('');
-    const fg = backgroundTransparent ? '#111827' : getContrastColor(backgroundColor);
+    const fg = backgroundTransparent
+      ? '#111827'
+      : getContrastColor(backgroundColor);
     const dataUrl = await iconComponentToPngDataUrl(
       Icon,
       backgroundColor,
@@ -372,17 +384,24 @@ function App() {
     }
     await saveIcon(
       dataUrl,
-      uiLanguage.startsWith('zh') ? '已切换为内置图标' : 'Built-in icon applied',
+      uiLanguage.startsWith('zh')
+        ? '已切换为内置图标'
+        : 'Built-in icon applied',
     );
   }
 
   async function onResetDefault() {
-    await saveIcon('', uiLanguage.startsWith('zh') ? '已切换为默认图标' : 'Default icon applied');
+    await saveIcon(
+      '',
+      uiLanguage.startsWith('zh') ? '已切换为默认图标' : 'Default icon applied',
+    );
   }
 
   async function onTestNotification() {
     setMessage('');
-    const result = (await browser.runtime.sendMessage({ type: 'test-notification' })) as TestNotificationResponse;
+    const result = (await browser.runtime.sendMessage({
+      type: 'test-notification',
+    })) as TestNotificationResponse;
     if (result?.ok === false) {
       if (uiLanguage.startsWith('zh')) {
         setMessage('测试通知失败');
@@ -475,35 +494,43 @@ function App() {
                   />
                 </Label>
                 <Label className="gap-3">
-                  <Switch
+                  <Checkbox
                     checked={backgroundTransparent}
-                    onCheckedChange={setBackgroundTransparent}
+                    onCheckedChange={(checked) => setBackgroundTransparent(checked === true)}
                     disabled={saving}
                   />
                   <span>{text.backgroundTransparent}</span>
                 </Label>
               </div>
-              <div className="grid grid-cols-5 gap-2 sm:grid-cols-7 md:grid-cols-8 lg:grid-cols-10">
+              <div className="grid max-h-[160px] grid-cols-5 gap-2 overflow-y-auto pr-1 sm:grid-cols-6 md:grid-cols-8">
                 {builtinIconComponents.map((Icon, idx) => (
                   <Button
                     type="button"
-                    key={idx}
-                    size="icon"
+                    key={`${idx}`}
                     variant="outline"
-                    className="size-14"
+                    className="h-12 w-12 p-0"
                     onClick={() => void onPickBuiltin(Icon)}
                     disabled={loading || saving}
+                    aria-label={`icon-${idx + 1}`}
                   >
                     <span
-                      className="inline-flex size-10 items-center justify-center rounded-md"
+                      className="inline-flex size-8 items-center justify-center rounded-md"
                       style={{
-                        background: backgroundTransparent ? 'transparent' : backgroundColor,
-                        border: backgroundTransparent ? '1px solid #d1d5db' : '1px solid transparent',
+                        background: backgroundTransparent
+                          ? 'transparent'
+                          : backgroundColor,
+                        border: backgroundTransparent
+                          ? '1px solid #d1d5db'
+                          : '1px solid transparent',
                       }}
                     >
                       <Icon
-                        size={24}
-                        color={backgroundTransparent ? '#111827' : getContrastColor(backgroundColor)}
+                        size={20}
+                        color={
+                          backgroundTransparent
+                            ? '#111827'
+                          : getContrastColor(backgroundColor)
+                        }
                       />
                     </span>
                   </Button>
@@ -513,11 +540,20 @@ function App() {
           </Card>
 
           <div className="flex flex-wrap gap-3">
-            <Button type="button" variant="outline" onClick={() => void onResetDefault()} disabled={loading || saving}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => void onResetDefault()}
+              disabled={loading || saving}
+            >
               <MdTimerOff className="size-4" />
               {text.reset}
             </Button>
-            <Button type="button" onClick={() => void onTestNotification()} disabled={loading || saving}>
+            <Button
+              type="button"
+              onClick={() => void onTestNotification()}
+              disabled={loading || saving}
+            >
               <BiSolidTimer className="size-4" />
               {text.test}
             </Button>

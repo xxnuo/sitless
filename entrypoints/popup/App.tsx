@@ -1,11 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { ChevronDown } from 'lucide-react';
+import { BiTimer } from 'react-icons/bi';
+import { IoNotificationsOutline } from 'react-icons/io5';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 
@@ -170,12 +173,12 @@ function SectionHeader({
   title,
   open,
   onClick,
-  badge,
+  icon,
 }: {
   title: string;
   open: boolean;
   onClick: () => void;
-  badge: string;
+  icon: ReactNode;
 }) {
   return (
     <button
@@ -184,7 +187,9 @@ function SectionHeader({
       onClick={onClick}
     >
       <div className="flex items-center gap-2">
-        <Badge variant="secondary">{badge}</Badge>
+        <span className="text-muted-foreground inline-flex size-5 items-center justify-center">
+          {icon}
+        </span>
         <span className="text-sm font-medium">{title}</span>
       </div>
       <span className="text-muted-foreground text-xs" aria-hidden="true">
@@ -401,9 +406,9 @@ function App() {
   const intervalStep = intervalUnit === 's' ? 6 : intervalUnit === 'h' ? 0.1 : 1;
 
   return (
-    <main className="w-[360px] space-y-3 p-4">
+    <main className="box-border w-[360px] max-w-full space-y-2.5 p-3">
       {showPermissionBanner ? (
-        <Card className="gap-2 border-amber-300 bg-amber-50 py-3">
+        <Card className="gap-1.5 border-amber-300 bg-amber-50 py-2.5">
           <CardContent className="flex items-center justify-between gap-2 px-3">
             <p className="text-muted-foreground text-xs">{t('permissionBannerText')}</p>
             <Button
@@ -419,14 +424,14 @@ function App() {
         </Card>
       ) : null}
 
-      <div className="space-y-1">
-        <h1 className="text-xl font-semibold">{t('popupTitle')}</h1>
+      <div className="space-y-0.5">
+        <h1 className="text-lg font-semibold leading-none">{t('popupTitle')}</h1>
         <p className="text-muted-foreground text-xs">{statusText}</p>
       </div>
 
       <Card className="gap-0 overflow-hidden py-0">
         <SectionHeader
-          badge="R"
+          icon={<BiTimer className="size-3.5" />}
           title={t('reminderSettingsTitle')}
           open={reminderOpen}
           onClick={() => {
@@ -438,13 +443,13 @@ function App() {
         {reminderOpen ? (
           <>
             <Separator />
-            <CardContent className="space-y-4 py-4">
+            <CardContent className="space-y-3 py-3">
               <div className="flex items-center justify-between gap-4">
                 <Label htmlFor="enabled">{t('toggleLabel')}</Label>
-                <Switch
+                <Checkbox
                   id="enabled"
                   checked={settings.enabled}
-                  onCheckedChange={(checked) => void save({ ...settings, enabled: checked })}
+                  onCheckedChange={(checked) => void save({ ...settings, enabled: checked === true })}
                   disabled={loading}
                 />
               </div>
@@ -471,6 +476,7 @@ function App() {
                 />
                 <div className="flex items-center gap-2">
                   <Input
+                    className="h-9"
                     type="number"
                     min={intervalMin}
                     max={intervalMax}
@@ -486,34 +492,37 @@ function App() {
                     }}
                     disabled={loading || !settings.enabled}
                   />
-                  <select
-                    value={intervalUnit}
-                    className={cn(
-                      'border-input bg-background focus-visible:border-ring focus-visible:ring-ring/50 h-9 rounded-md border px-3 text-sm outline-none focus-visible:ring-[3px]',
-                    )}
-                    onChange={(e) => {
-                      const nextUnit = e.target.value as IntervalUnit;
-                      const currentMinutes = intervalToMinutes(intervalValue, intervalUnit);
-                      const nextValueRaw =
-                        nextUnit === 's'
-                          ? currentMinutes * 60
-                          : nextUnit === 'h'
-                            ? currentMinutes / 60
-                            : currentMinutes;
-                      const nextValue = clampInterval(nextValueRaw, nextUnit);
-                      setIntervalUnit(nextUnit);
-                      setIntervalValue(nextValue);
-                      void save({
-                        ...settings,
-                        intervalMinutes: intervalToMinutes(nextValue, nextUnit),
-                      });
-                    }}
-                    disabled={loading || !settings.enabled}
-                  >
-                    <option value="s">{unitLabels.s}</option>
-                    <option value="m">{unitLabels.m}</option>
-                    <option value="h">{unitLabels.h}</option>
-                  </select>
+                  <div className="relative w-[84px] shrink-0">
+                    <select
+                      value={intervalUnit}
+                      className={cn(
+                        'border-input bg-background focus-visible:border-ring focus-visible:ring-ring/50 h-9 w-full appearance-none rounded-md border px-2 pr-7 text-sm outline-none focus-visible:ring-[3px]',
+                      )}
+                      onChange={(e) => {
+                        const nextUnit = e.target.value as IntervalUnit;
+                        const currentMinutes = intervalToMinutes(intervalValue, intervalUnit);
+                        const nextValueRaw =
+                          nextUnit === 's'
+                            ? currentMinutes * 60
+                            : nextUnit === 'h'
+                              ? currentMinutes / 60
+                              : currentMinutes;
+                        const nextValue = clampInterval(nextValueRaw, nextUnit);
+                        setIntervalUnit(nextUnit);
+                        setIntervalValue(nextValue);
+                        void save({
+                          ...settings,
+                          intervalMinutes: intervalToMinutes(nextValue, nextUnit),
+                        });
+                      }}
+                      disabled={loading || !settings.enabled}
+                    >
+                      <option value="s">{unitLabels.s}</option>
+                      <option value="m">{unitLabels.m}</option>
+                      <option value="h">{unitLabels.h}</option>
+                    </select>
+                    <ChevronDown className="text-muted-foreground pointer-events-none absolute top-1/2 right-2 size-4 -translate-y-1/2" />
+                  </div>
                 </div>
               </div>
 
@@ -533,7 +542,7 @@ function App() {
 
       <Card className="gap-0 overflow-hidden py-0">
         <SectionHeader
-          badge="N"
+          icon={<IoNotificationsOutline className="size-3.5" />}
           title={t('notificationSettingsTitle')}
           open={notificationOpen}
           onClick={() => {
@@ -545,7 +554,7 @@ function App() {
         {notificationOpen ? (
           <>
             <Separator />
-            <CardContent className="space-y-4 py-4">
+            <CardContent className="space-y-3 py-3">
               <Badge variant={permissionGranted ? 'secondary' : 'destructive'}>{permissionText}</Badge>
 
               {!permissionGranted ? (
@@ -585,13 +594,13 @@ function App() {
                 <Label>{t('notificationIconLabel')}</Label>
                 <div className="bg-muted/40 flex items-center gap-3 rounded-lg border p-3">
                   <img
-                    className="size-10 rounded-md border object-cover"
+                    className="size-10 shrink-0 rounded-md border object-cover"
                     src={settings.notificationIconDataUrl || '/icon/128.png'}
                     alt=""
                   />
                   <Button
                     type="button"
-                    className="w-full"
+                    className="h-9 min-w-0 flex-1"
                     variant="outline"
                     onClick={() => void openIconSettingsPage()}
                     disabled={loading}

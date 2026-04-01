@@ -35,10 +35,22 @@
     "message": "提醒開關"
   },
   "intervalLabel": {
-    "message": "提醒間隔（分鐘）"
+    "message": "提醒間隔"
+  },
+  "resetSettingsBtn": {
+    "message": "重設設定"
   },
   "notificationTitleLabel": {
     "message": "通知標題"
+  },
+  "notificationIconLabel": {
+    "message": "通知圖示"
+  },
+  "notificationIconPickBtn": {
+    "message": "選擇圖示"
+  },
+  "notificationIconClearBtn": {
+    "message": "使用預設圖示"
   },
   "notificationTitlePlaceholder": {
     "message": "留空則使用預設標題"
@@ -63,6 +75,9 @@
   },
   "permissionBannerAction": {
     "message": "開啟"
+  },
+  "refreshPermissionBtn": {
+    "message": "重新整理權限狀態"
   },
   "requestPermissionBtn": {
     "message": "申請通知權限"
